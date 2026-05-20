@@ -47,20 +47,12 @@ npm run preview
 npm run lint
 ```
 
-## CI/CD no GitHub
+## CI no GitHub
 
-O repositório inclui um workflow de GitHub Actions em `.github/workflows/ci-cd.yml` com duas etapas:
+O repositório inclui um workflow de GitHub Actions em `.github/workflows/ci-cd.yml` para integracao continua.
 
-- CI em `push` e `pull_request`: executa `npm ci`, `npm run lint` e `npm run build`.
-- CD em `push` para `main` ou `master`: publica a pasta `dist/` no GitHub Pages.
-
-### Como habilitar o deploy
-
-1. Abra `Settings > Pages` no repositório.
-2. Em `Source`, selecione `GitHub Actions`.
-3. Faça merge do workflow na branch `main` ou `master`.
-
-O workflow usa Node.js 22 e ajusta automaticamente o `base path` do Vite para funcionar no GitHub Pages.
+- Em `push` e `pull_request`, o workflow executa `npm ci`, `npm run lint` e `npm run build`.
+- O workflow usa Node.js 22, compatível com a versao atual do Vite no projeto.
 
 ## Scripts disponiveis
 
