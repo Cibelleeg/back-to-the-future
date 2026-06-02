@@ -3,12 +3,22 @@ import { FILMES, PRODUTOS, SESSOES } from '../../data/mock';
 import type { Filme, Produto, Sessao } from '../../types/cinema';
 import { filmeCombinaComBusca, formataHora, formataPreco } from '../../utils/formatters';
 import { FilmeCard } from '../../components/cinema/FilmeCard';
+import { FilmeCardBreve } from '../../components/cinema/FilmeCardBreve';
 import { FilmeModal } from '../../components/cinema/FilmeModal';
 import { Hero } from '../../components/cinema/Hero';
 import { Navbar } from '../../components/cinema/Navbar';
 import { ProdutoCard } from '../../components/cinema/ProdutoCard';
+import { ProdutoModal } from '../../components/cinema/ProdutoModal';
 
-function filtrarFilmes(filmes: Filme[], genero: string, busca: string) {
+const DIAS_EM_BREVE = 7;
+
+function normalizarData(data: Date) {
+  const dataNormalizada = new Date(data);
+  dataNormalizada.setHours(0, 0, 0, 0);
+  return dataNormalizada;
+}
+
+function filtrarFilmesBase(filmes: Filme[], genero: string, busca: string) {
   return filmes.filter((filme) => {
     const generoValido = genero === 'Todos' || filme.genero === genero;
     const buscaValida = filmeCombinaComBusca(filme.titulo, busca);
@@ -17,39 +27,71 @@ function filtrarFilmes(filmes: Filme[], genero: string, busca: string) {
   });
 }
 
+function filtrarFilmesEmCartaz(filmes: Filme[], genero: string, busca: string) {
+  const hoje = normalizarData(new Date());
+
+  return filtrarFilmesBase(filmes, genero, busca).filter((filme) => {
+    const dataLancamento = normalizarData(new Date(filme.dataLancamento));
+    const dataFimCartaz = normalizarData(new Date(filme.dataFimCartaz));
+
+    return dataLancamento <= hoje && dataFimCartaz >= hoje;
+  });
+}
+
+function filtrarFilmesEmBreve(filmes: Filme[], genero: string, busca: string) {
+  const hoje = normalizarData(new Date());
+
+  const limiteEmBreve = new Date(hoje);
+  limiteEmBreve.setDate(limiteEmBreve.getDate() + DIAS_EM_BREVE);
+
+  return filtrarFilmesBase(filmes, genero, busca).filter((filme) => {
+    const dataLancamento = normalizarData(new Date(filme.dataLancamento));
+
+    return dataLancamento > hoje && dataLancamento <= limiteEmBreve;
+  });
+}
+
 function filtrarProdutos(produtos: Produto[], categoria: string) {
-  return produtos.filter((produto) => categoria === 'Todos' || produto.categoria === categoria);
+  return produtos.filter((produto) => {
+    return categoria === 'Todos' || produto.categoria === categoria;
+  });
 }
 
 export function CinemaHomePage() {
   const [filmeSelecionado, setFilmeSelecionado] = useState<Filme | null>(null);
+  const [produtoSelecionado, setProdutoSelecionado] = useState<Produto | null>(null);
   const [generoSelecionado, setGeneroSelecionado] = useState('Todos');
   const [categoriaSelecionada, setCategoriaSelecionada] = useState('Todos');
   const [busca, setBusca] = useState('');
 
-  const generos = useMemo(() => ['Todos', ...new Set(FILMES.map((filme) => filme.genero))], []);
-  const categorias = useMemo(() => ['Todos', ...new Set(PRODUTOS.map((produto) => produto.categoria))], []);
+  const generos = useMemo(() => {
+    return ['Todos', ...new Set(FILMES.map((filme) => filme.genero))];
+  }, []);
 
-  const filmesFiltrados = useMemo(
-    () => filtrarFilmes(FILMES, generoSelecionado, busca),
-    [generoSelecionado, busca],
-  );
+  const categorias = useMemo(() => {
+    return ['Todos', ...new Set(PRODUTOS.map((produto) => produto.categoria))];
+  }, []);
 
-  const produtosFiltrados = useMemo(
-    () => filtrarProdutos(PRODUTOS, categoriaSelecionada),
-    [categoriaSelecionada],
-  );
+  const filmesEmCartaz = useMemo(() => {
+    return filtrarFilmesEmCartaz(FILMES, generoSelecionado, busca);
+  }, [generoSelecionado, busca]);
 
-  const sessoesPorFilme = useMemo(
-    () =>
-      SESSOES.reduce<Record<number, Sessao[]>>((acc, sessao) => {
-        acc[sessao.idFilme] = [...(acc[sessao.idFilme] ?? []), sessao];
-        return acc;
-      }, {}),
-    [],
-  );
+  const filmesEmBreve = useMemo(() => {
+    return filtrarFilmesEmBreve(FILMES, generoSelecionado, busca);
+  }, [generoSelecionado, busca]);
 
-  const filmeDestaque = FILMES.find((filme) => filme.titulo === 'Duna: Parte Dois') ?? FILMES[0];
+  const produtosFiltrados = useMemo(() => {
+    return filtrarProdutos(PRODUTOS, categoriaSelecionada);
+  }, [categoriaSelecionada]);
+
+  const sessoesPorFilme = useMemo(() => {
+    return SESSOES.reduce<Record<number, Sessao[]>>((acc, sessao) => {
+      acc[sessao.idFilme] = [...(acc[sessao.idFilme] ?? []), sessao];
+      return acc;
+    }, {});
+  }, []);
+
+  const filmeDestaque = filmesEmCartaz[0] ?? FILMES[0];
 
   function handleBuy(filme: Filme, sessao: Sessao) {
     alert(
@@ -62,7 +104,10 @@ export function CinemaHomePage() {
       <Navbar search={busca} onSearchChange={setBusca} />
 
       {filmeDestaque && (
-        <Hero filme={filmeDestaque} onShowSessions={() => setFilmeSelecionado(filmeDestaque)} />
+        <Hero
+          filme={filmeDestaque}
+          onShowSessions={() => setFilmeSelecionado(filmeDestaque)}
+        />
       )}
 
       <div className="content">
@@ -87,18 +132,49 @@ export function CinemaHomePage() {
               </div>
             </div>
 
-            <a href="#">Ver todos →</a>
+            <a href="#">
+              Ver todos <i className="fa-solid fa-angle-right"></i>
+            </a>
           </header>
 
-          {filmesFiltrados.length === 0 ? (
-            <p className="empty-message">Nenhum filme encontrado.</p>
+          {filmesEmCartaz.length === 0 ? (
+            <p className="empty-message">Nenhum filme em cartaz encontrado.</p>
           ) : (
             <div className="movies-grid">
-              {filmesFiltrados.map((filme) => (
+              {filmesEmCartaz.map((filme) => (
                 <FilmeCard
                   key={filme.idFilme}
                   filme={filme}
                   sessoes={sessoesPorFilme[filme.idFilme] ?? []}
+                  onClick={() => setFilmeSelecionado(filme)}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section className="section">
+          <header className="section__header">
+            <div>
+              <div className="section__title">
+                <span className="section__dot" />
+                <h2>Em Breve</h2>
+              </div>
+            </div>
+
+            <a href="#">
+              Ver todos <i className="fa-solid fa-angle-right"></i>
+            </a>
+          </header>
+
+          {filmesEmBreve.length === 0 ? (
+            <p className="empty-message">Nenhum lançamento próximo.</p>
+          ) : (
+            <div className="movies-grid">
+              {filmesEmBreve.map((filme) => (
+                <FilmeCardBreve
+                  key={filme.idFilme}
+                  filme={filme}
                   onClick={() => setFilmeSelecionado(filme)}
                 />
               ))}
@@ -127,12 +203,18 @@ export function CinemaHomePage() {
               </div>
             </div>
 
-            <a href="#">Ver cardápio →</a>
+            <a href="#">
+              Ver cardápio <i className="fa-solid fa-angle-right"></i>
+            </a>
           </header>
 
           <div className="products-grid">
             {produtosFiltrados.map((produto) => (
-              <ProdutoCard key={produto.idProduto} produto={produto} />
+              <ProdutoCard
+                key={produto.idProduto}
+                produto={produto}
+                onClick={() => setProdutoSelecionado(produto)}
+              />
             ))}
           </div>
         </section>
@@ -144,6 +226,13 @@ export function CinemaHomePage() {
           sessoes={sessoesPorFilme[filmeSelecionado.idFilme] ?? []}
           onClose={() => setFilmeSelecionado(null)}
           onBuy={handleBuy}
+        />
+      )}
+
+      {produtoSelecionado && (
+        <ProdutoModal
+          produto={produtoSelecionado}
+          onClose={() => setProdutoSelecionado(null)}
         />
       )}
     </main>

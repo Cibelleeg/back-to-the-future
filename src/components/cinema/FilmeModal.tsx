@@ -22,7 +22,6 @@ export function FilmeModal({ filme, sessoes, onClose, onBuy }: FilmeModalProps) 
       <section className="movie-modal" onClick={(event) => event.stopPropagation()}>
         <div className="movie-modal__header">
           <img src={filme.poster} alt={filme.titulo} />
-          <div className="movie-modal__gradient" />
 
           <div className="movie-modal__info">
             <button className="movie-modal__close" onClick={onClose}>✕</button>

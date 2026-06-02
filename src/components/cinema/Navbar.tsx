@@ -27,7 +27,7 @@ export function Navbar({ search, onSearchChange }: NavbarProps) {
             onChange={(event) => onSearchChange(event.target.value)}
             placeholder="Buscar filme..."
           />
-          <span>🔍</span>
+          <span><i className="fa-solid fa-magnifying-glass"></i></span>
         </div>
 
         <button className="button-outline">Entrar</button>

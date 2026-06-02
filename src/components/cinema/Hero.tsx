@@ -19,9 +19,9 @@ export function Hero({ filme, onShowSessions }: HeroProps) {
 
         <div className="hero__actions">
           <button className="button-primary button-large" onClick={onShowSessions}>
-            🎟 Ver sessões
+            <i className="fa-solid fa-ticket"></i> Ver sessões
           </button>
-          <button className="button-glass button-large">▶ Trailer</button>
+          <button className="button-glass button-large"> <i className="fa-solid fa-play"></i> Trailer</button>
         </div>
       </div>
     </section>

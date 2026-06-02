@@ -22,3 +22,7 @@ export function formataPreco(preco: number): string {
 export function filmeCombinaComBusca(titulo: string, busca: string): boolean {
   return titulo.toLowerCase().includes(busca.trim().toLowerCase());
 }
+
+export function formataData(data: string): string {
+  return new Date(data).toLocaleDateString('pt-BR');
+}

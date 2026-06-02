@@ -14,7 +14,8 @@ export interface Filme {
   duracao: number;
   classificacao: Classificacao;
   genero: string;
-  dataLancamento: string;
+  dataLancamento: Date;
+  dataFimCartaz: Date;
   poster: string;
   nota: number;
 }
@@ -36,5 +37,5 @@ export interface Produto {
   preco: number;
   estoque: number;
   categoria: string;
-  emoji: string;
+  img: string;
 }
