@@ -1,0 +1,1 @@
+export { FilmeModal } from './FilmeModal';

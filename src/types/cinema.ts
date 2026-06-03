@@ -2,6 +2,12 @@ export type Classificacao = 'L' | '10' | '12' | '14' | '16' | '18';
 export type Formato = '2D' | '3D' | '4DX' | 'IMAX';
 export type Idioma = 'Dublado' | 'Legendado';
 
+export interface Cinema {
+  idCinema: number;
+  nome: string;
+  cidade: string;
+}
+
 export interface Sala {
   nome: string;
   tipo: string;
@@ -23,6 +29,7 @@ export interface Filme {
 export interface Sessao {
   idSessao: number;
   idFilme: number;
+  idCinema: number;
   dataHora: string;
   idioma: Idioma;
   formato: Formato;
@@ -32,6 +39,7 @@ export interface Sessao {
 
 export interface Produto {
   idProduto: number;
+  idCinema: number;
   nome: string;
   descricao: string;
   preco: number;

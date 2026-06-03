@@ -1,0 +1,1 @@
+export { FilmeCard } from './FilmeCard';

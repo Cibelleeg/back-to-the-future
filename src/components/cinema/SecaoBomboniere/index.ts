@@ -1,0 +1,1 @@
+export { SecaoBomboniere } from './SecaoBomboniere';
