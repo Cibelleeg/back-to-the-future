@@ -1,0 +1,1 @@
+export { FilmeCardBreve } from './FilmeCardBreve';

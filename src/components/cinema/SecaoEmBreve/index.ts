@@ -1,0 +1,1 @@
+export { SecaoEmBreve } from './SecaoEmBreve';

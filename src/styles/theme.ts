@@ -20,4 +20,7 @@ export const colors = {
   text: {
     muted: "#aaa",
   },
+  badge: {
+    destaque: { bg: "#1f9e57", text: "#fff" },
+  },
 };

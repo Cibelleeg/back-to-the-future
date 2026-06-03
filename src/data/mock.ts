@@ -1,4 +1,10 @@
-import type { Filme, Produto, Sessao } from '../types/cinema';
+import type { Cinema, Filme, Produto, Sessao } from '../types/cinema';
+
+export const CINEMAS: Cinema[] = [
+  { idCinema: 1, nome: 'CineMax Centro', cidade: 'São Paulo' },
+  { idCinema: 2, nome: 'CineMax Shopping', cidade: 'São Paulo' },
+  { idCinema: 3, nome: 'CineMax Norte', cidade: 'Campinas' },
+];
 
 export const FILMES: Filme[] = [
   { idFilme: 1, titulo: 'Furiosa: Uma Saga Mad Max', sinopse: 'A origem de Furiosa, uma jovem capturada pelo Senhor da Guerra Immortan Joe e criada nas Terras Áridas.', duracao: 148, classificacao: '16', genero: 'Ação', dataLancamento: '2026-05-24', dataFimCartaz: '2026-06-20', poster: 'https://image.tmdb.org/t/p/w400/iADOJ8Zymht2JPMoy3R7xceZprc.jpg', nota: 7.8 },
@@ -10,23 +16,29 @@ export const FILMES: Filme[] = [
 ];
 
 export const SESSOES: Sessao[] = [
-  { idSessao: 1, idFilme: 1, dataHora: '2025-05-22T14:30', idioma: 'Dublado', formato: '2D', precoBase: 32, sala: { nome: 'Sala 1', tipo: 'Convencional' } },
-  { idSessao: 2, idFilme: 1, dataHora: '2025-05-22T17:00', idioma: 'Legendado', formato: '4DX', precoBase: 58, sala: { nome: 'Sala 4DX', tipo: '4DX' } },
-  { idSessao: 3, idFilme: 1, dataHora: '2025-05-22T20:15', idioma: 'Dublado', formato: 'IMAX', precoBase: 65, sala: { nome: 'IMAX 1', tipo: 'IMAX' } },
-  { idSessao: 4, idFilme: 2, dataHora: '2025-05-22T15:00', idioma: 'Dublado', formato: '2D', precoBase: 28, sala: { nome: 'Sala 2', tipo: 'Convencional' } },
-  { idSessao: 5, idFilme: 2, dataHora: '2025-05-22T18:30', idioma: 'Dublado', formato: '3D', precoBase: 38, sala: { nome: 'Sala 3D', tipo: '3D' } },
-  { idSessao: 6, idFilme: 3, dataHora: '2025-05-22T19:00', idioma: 'Legendado', formato: '2D', precoBase: 32, sala: { nome: 'Sala 3', tipo: 'Convencional' } },
-  { idSessao: 7, idFilme: 3, dataHora: '2025-05-22T21:30', idioma: 'Dublado', formato: '2D', precoBase: 32, sala: { nome: 'Sala 2', tipo: 'Convencional' } },
-  { idSessao: 8, idFilme: 4, dataHora: '2025-05-22T16:00', idioma: 'Dublado', formato: 'IMAX', precoBase: 65, sala: { nome: 'IMAX 1', tipo: 'IMAX' } },
-  { idSessao: 9, idFilme: 5, dataHora: '2025-05-22T13:00', idioma: 'Legendado', formato: 'IMAX', precoBase: 65, sala: { nome: 'IMAX 1', tipo: 'IMAX' } },
-  { idSessao: 10, idFilme: 6, dataHora: '2025-05-22T21:00', idioma: 'Dublado', formato: '4DX', precoBase: 58, sala: { nome: 'Sala 4DX', tipo: '4DX' } },
+  // Cinema 1 — CineMax Centro (filmes 1, 2, 3)
+  { idSessao: 1, idFilme: 1, idCinema: 1, dataHora: '2025-05-22T14:30', idioma: 'Dublado', formato: '2D', precoBase: 32, sala: { nome: 'Sala 1', tipo: 'Convencional' } },
+  { idSessao: 2, idFilme: 1, idCinema: 1, dataHora: '2025-05-22T20:15', idioma: 'Dublado', formato: 'IMAX', precoBase: 65, sala: { nome: 'IMAX 1', tipo: 'IMAX' } },
+  { idSessao: 3, idFilme: 2, idCinema: 1, dataHora: '2025-05-22T15:00', idioma: 'Dublado', formato: '2D', precoBase: 28, sala: { nome: 'Sala 2', tipo: 'Convencional' } },
+  { idSessao: 4, idFilme: 3, idCinema: 1, dataHora: '2025-05-22T21:30', idioma: 'Dublado', formato: '2D', precoBase: 32, sala: { nome: 'Sala 3', tipo: 'Convencional' } },
+  // Cinema 2 — CineMax Shopping (filmes 1, 2, 4)
+  { idSessao: 5, idFilme: 1, idCinema: 2, dataHora: '2025-05-22T17:00', idioma: 'Legendado', formato: '4DX', precoBase: 58, sala: { nome: 'Sala 4DX', tipo: '4DX' } },
+  { idSessao: 6, idFilme: 2, idCinema: 2, dataHora: '2025-05-22T18:30', idioma: 'Dublado', formato: '3D', precoBase: 38, sala: { nome: 'Sala 3D', tipo: '3D' } },
+  { idSessao: 7, idFilme: 3, idCinema: 2, dataHora: '2025-05-22T19:00', idioma: 'Legendado', formato: '2D', precoBase: 32, sala: { nome: 'Sala 2', tipo: 'Convencional' } },
+  { idSessao: 8, idFilme: 4, idCinema: 2, dataHora: '2025-05-22T16:00', idioma: 'Dublado', formato: 'IMAX', precoBase: 65, sala: { nome: 'IMAX 1', tipo: 'IMAX' } },
+  // Cinema 3 — CineMax Norte (filmes 5, 6)
+  { idSessao: 9, idFilme: 5, idCinema: 3, dataHora: '2025-05-22T13:00', idioma: 'Legendado', formato: 'IMAX', precoBase: 65, sala: { nome: 'IMAX 1', tipo: 'IMAX' } },
+  { idSessao: 10, idFilme: 6, idCinema: 3, dataHora: '2025-05-22T21:00', idioma: 'Dublado', formato: '4DX', precoBase: 58, sala: { nome: 'Sala 4DX', tipo: '4DX' } },
 ];
 
 export const PRODUTOS: Produto[] = [
-  { idProduto: 1, nome: 'Pipoca Média Salgada', descricao: 'Pipoca quentinha no balde médio', preco: 18.9, estoque: 50, categoria: 'Pipoca', img: 'https://cdn.awsli.com.br/2500x2500/2773/2773081/produto/305376216/combo-cinema--2--cw0vxlnrbj.jpg' },
-  { idProduto: 2, nome: 'Combo Duo', descricao: 'Pipoca grande + 2 refrigerantes', preco: 39.9, estoque: 30, categoria: 'Combo', img: 'https://cdn.awsli.com.br/2500x2500/2773/2773081/produto/305376216/combo-cinema--2--cw0vxlnrbj.jpg' },
-  { idProduto: 3, nome: 'Nachos c/ Cheddar', descricao: 'Nachos crocantes com molho cheddar', preco: 24.9, estoque: 40, categoria: 'Salgados', img: 'https://cdn.awsli.com.br/2500x2500/2773/2773081/produto/305376216/combo-cinema--2--cw0vxlnrbj.jpg' },
-  { idProduto: 4, nome: 'Refrigerante 500ml', descricao: 'Coca, Guaraná ou Sprite', preco: 12.9, estoque: 100, categoria: 'Bebidas', img: 'https://cdn.awsli.com.br/2500x2500/2773/2773081/produto/305376216/combo-cinema--2--cw0vxlnrbj.jpg' },
-  { idProduto: 5, nome: "M&M's 45g", descricao: 'Confeitos de chocolate coloridos', preco: 9.9, estoque: 80, categoria: 'Doces', img: 'https://cdn.awsli.com.br/2500x2500/2773/2773081/produto/305376216/combo-cinema--2--cw0vxlnrbj.jpg' },
-  { idProduto: 6, nome: 'Hot Dog Premium', descricao: 'Salsicha, mostarda, ketchup e cheddar', preco: 22.9, estoque: 25, categoria: 'Salgados', img: 'https://cdn.awsli.com.br/2500x2500/2773/2773081/produto/305376216/combo-cinema--2--cw0vxlnrbj.jpg' },
+  // Cinema 1 — CineMax Centro
+  { idProduto: 1, idCinema: 1, nome: 'Pipoca Média Salgada', descricao: 'Pipoca quentinha no balde médio', preco: 18.9, estoque: 50, categoria: 'Pipoca', img: 'https://cdn.awsli.com.br/2500x2500/2773/2773081/produto/305376216/combo-cinema--2--cw0vxlnrbj.jpg' },
+  { idProduto: 2, idCinema: 1, nome: 'Combo Duo', descricao: 'Pipoca grande + 2 refrigerantes', preco: 39.9, estoque: 30, categoria: 'Combo', img: 'https://cdn.awsli.com.br/2500x2500/2773/2773081/produto/305376216/combo-cinema--2--cw0vxlnrbj.jpg' },
+  // Cinema 2 — CineMax Shopping
+  { idProduto: 3, idCinema: 2, nome: 'Nachos c/ Cheddar', descricao: 'Nachos crocantes com molho cheddar', preco: 24.9, estoque: 40, categoria: 'Salgados', img: 'https://cdn.awsli.com.br/2500x2500/2773/2773081/produto/305376216/combo-cinema--2--cw0vxlnrbj.jpg' },
+  { idProduto: 4, idCinema: 2, nome: 'Refrigerante 500ml', descricao: 'Coca, Guaraná ou Sprite', preco: 12.9, estoque: 100, categoria: 'Bebidas', img: 'https://cdn.awsli.com.br/2500x2500/2773/2773081/produto/305376216/combo-cinema--2--cw0vxlnrbj.jpg' },
+  // Cinema 3 — CineMax Norte
+  { idProduto: 5, idCinema: 3, nome: "M&M's 45g", descricao: 'Confeitos de chocolate coloridos', preco: 9.9, estoque: 80, categoria: 'Doces', img: 'https://cdn.awsli.com.br/2500x2500/2773/2773081/produto/305376216/combo-cinema--2--cw0vxlnrbj.jpg' },
+  { idProduto: 6, idCinema: 3, nome: 'Hot Dog Premium', descricao: 'Salsicha, mostarda, ketchup e cheddar', preco: 22.9, estoque: 25, categoria: 'Salgados', img: 'https://cdn.awsli.com.br/2500x2500/2773/2773081/produto/305376216/combo-cinema--2--cw0vxlnrbj.jpg' },
 ];
