@@ -1,3 +1,5 @@
+import { formataNota } from '../../utils/formatters';
+
 interface StarRatingProps {
   rating: number;
 }
@@ -9,7 +11,7 @@ export function StarRating({ rating }: StarRatingProps) {
     <span className="star-rating">
       {"★".repeat(stars)}
       {"☆".repeat(5 - stars)}
-      <span>{rating.toFixed(1)}</span>
+      <span>{formataNota(rating)}</span>
     </span>
   );
 }

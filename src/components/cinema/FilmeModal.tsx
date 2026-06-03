@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Filme, Sessao } from '../../types/cinema';
-import { formataDuracao, formataPreco } from '../../utils/formatters';
+import { formataDuracao, formataDataHoje, formataPreco } from '../../utils/formatters';
 import { classColors } from '../../styles/theme';
 import { Badge } from './Badge';
 import { StarRating } from './Avaliacao';
@@ -39,7 +39,7 @@ export function FilmeModal({ filme, sessoes, onClose, onBuy }: FilmeModalProps) 
         </div>
 
         <div className="movie-modal__sessions">
-          <h3>Sessões — Hoje, 22 Mai</h3>
+          <h3>Sessões — {formataDataHoje()}</h3>
           <div>
             {sessoes.map((sessao) => (
               <SessaoButton

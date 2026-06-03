@@ -14,8 +14,8 @@ export interface Filme {
   duracao: number;
   classificacao: Classificacao;
   genero: string;
-  dataLancamento: Date;
-  dataFimCartaz: Date;
+  dataLancamento: string;
+  dataFimCartaz: string;
   poster: string;
   nota: number;
 }

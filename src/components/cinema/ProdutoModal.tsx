@@ -63,7 +63,7 @@ export function ProdutoModal({ produto, onClose }: ProdutoModalProps) {
 
             <div>
               <button onClick={diminuirQuantidade} disabled={quantidade === 1}>
-                <i className="fa-solid fa-check"></i>
+                <i className="fa-solid fa-minus"></i>
               </button>
 
               <strong>{quantidade}</strong>

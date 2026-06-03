@@ -26,3 +26,15 @@ export function filmeCombinaComBusca(titulo: string, busca: string): boolean {
 export function formataData(data: string): string {
   return new Date(data).toLocaleDateString('pt-BR');
 }
+
+export function formataDataHoje(): string {
+  return new Date().toLocaleDateString('pt-BR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'short',
+  });
+}
+
+export function formataNota(nota: number): string {
+  return nota.toFixed(1);
+}
