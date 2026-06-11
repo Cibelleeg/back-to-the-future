@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import type { Filme, Sessao } from '../../../types/cinema';
 import { formataDuracao, formataDataHoje, formataPreco } from '../../../utils/formatters';
-import { classColors } from '../../../styles/theme';
 import { ModalBackdrop, ButtonPrimary, ButtonSecondary } from '../../../styles/shared';
 import { Badge } from '../../ui/Badge';
 import { StarRating } from '../../ui/StarRating';
@@ -17,20 +16,17 @@ interface FilmeModalProps {
 
 export function FilmeModal({ filme, sessoes, onClose, onBuy }: FilmeModalProps) {
   const [sessaoSelecionada, setSessaoSelecionada] = useState<Sessao | null>(null);
-  const classificacaoStyle = classColors[filme.classificacao] || classColors.L;
 
   return (
     <ModalBackdrop onClick={onClose}>
       <S.Modal onClick={(e) => e.stopPropagation()}>
         <S.Header>
           <S.Poster src={filme.poster} alt={filme.titulo} />
-          <S.PosterGradient />
-
           <S.Info>
             <S.CloseButton onClick={onClose}>✕</S.CloseButton>
 
             <S.TagsRow>
-              <Badge label={`${filme.classificacao} anos`} $bg={classificacaoStyle.bg} $color={classificacaoStyle.text} />
+              <Badge label={`${filme.classificacao} anos`} />
               <Badge label={filme.genero} />
               <Badge label={formataDuracao(filme.duracao)} />
             </S.TagsRow>

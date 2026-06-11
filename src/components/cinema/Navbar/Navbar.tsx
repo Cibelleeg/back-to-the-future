@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import type { Cinema } from '../../../types/cinema';
+import { useCart } from '../../../contexts/useCart';
 import { CinemaSelector } from '../CinemaSelector';
 import * as S from './Navbar.styles';
 
@@ -9,12 +11,21 @@ interface NavbarProps {
   cinemas: Cinema[];
   cinemaSelecionado: Cinema | null;
   onCinemaChange: (cinema: Cinema | null) => void;
+  onMenuOpen: () => void;
 }
 
-const LINKS = ['Filmes', 'Cinemas', 'Bomboniere', 'Eventos', 'Clube'];
+const LINKS = [
+  { label: 'Filmes',     to: '/filmes' },
+  { label: 'Cinemas',    to: '/cinemas' },
+  { label: 'Bomboniere', to: '/#bomboniere' },
+  { label: 'Eventos',    to: '/#eventos' },
+  { label: 'Clube',      to: '/#clube' },
+];
 
-export function Navbar({ search, onSearchChange, cinemas, cinemaSelecionado, onCinemaChange }: NavbarProps) {
+export function Navbar({ search, onSearchChange, cinemas, cinemaSelecionado, onCinemaChange, onMenuOpen }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
+  const { count } = useCart();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -25,14 +36,16 @@ export function Navbar({ search, onSearchChange, cinemas, cinemaSelecionado, onC
 
   return (
     <S.Nav $scrolled={scrolled}>
-      <S.Logo href="#">
+      <S.Logo as={Link} to="/">
         <S.LogoDot />
         CINE<b>FESP</b>
       </S.Logo>
 
       <S.Links>
-        {LINKS.map((item, i) => (
-          <S.NavLink key={item} href="#" $active={i === 0}>{item}</S.NavLink>
+        {LINKS.map(({ label, to }) => (
+          <S.NavLink key={label} as={Link} to={to} $active={pathname === to}>
+            {label}
+          </S.NavLink>
         ))}
       </S.Links>
 
@@ -57,9 +70,16 @@ export function Navbar({ search, onSearchChange, cinemas, cinemaSelecionado, onC
       />
 
       <S.Auth>
+        <S.CartBtn>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+            <path d="M3 6h18M16 10a4 4 0 0 1-8 0" />
+          </svg>
+          {count > 0 && <S.CartBadge>{count > 99 ? '99+' : count}</S.CartBadge>}
+        </S.CartBtn>
         <S.BtnGhost>Entrar</S.BtnGhost>
         <S.BtnSolid>Cadastrar</S.BtnSolid>
-        <S.Burger aria-label="Menu">
+        <S.Burger aria-label="Menu" onClick={onMenuOpen}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <path d="M4 7h16M4 12h16M4 17h16" />
           </svg>

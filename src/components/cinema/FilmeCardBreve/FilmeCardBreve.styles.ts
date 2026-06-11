@@ -1,5 +1,5 @@
-export { Card, Poster, Classification, Overlay, OverlayTitle, Tags } from '../FilmeCard/FilmeCard.styles';
 import styled from 'styled-components';
+export { Card, Poster, Classification, Overlay, OverlayTitle, Tags } from '../MovieCard.styles';
 
 export const ReleaseDate = styled.p`
   font-size: 11px;

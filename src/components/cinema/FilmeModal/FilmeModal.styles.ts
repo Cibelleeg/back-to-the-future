@@ -23,14 +23,6 @@ export const Poster = styled.img`
   flex-shrink: 0;
 `;
 
-export const PosterGradient = styled.div`
-  position: absolute;
-  inset: 0;
-  left: 140px;
-  background: linear-gradient(90deg, var(--bg-secondary) 0%, transparent 60%);
-  pointer-events: none;
-`;
-
 export const Info = styled.div`
   padding: 24px 24px 24px 80px;
   flex: 1;

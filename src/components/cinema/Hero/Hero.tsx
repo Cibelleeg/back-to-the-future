@@ -1,5 +1,4 @@
 import type { Filme } from '../../../types/cinema';
-import { colors } from '../../../styles/theme';
 import { Badge } from '../../ui/Badge';
 import { ButtonGlass } from '../../../styles/shared';
 import * as S from './Hero.styles';
@@ -16,7 +15,7 @@ export function Hero({ filme, onShowSessions }: HeroProps) {
       <S.Gradient />
 
       <S.Content>
-        <Badge label="Em destaque" $bg={colors.badge.destaque.bg} $color={colors.badge.destaque.text} />
+        <Badge label="Em destaque" />
         <S.Title>{filme.titulo}</S.Title>
         <S.Synopsis>{filme.sinopse}</S.Synopsis>
         <S.Actions>

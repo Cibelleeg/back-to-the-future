@@ -2,12 +2,13 @@ import { useState } from 'react';
 import type { Filme, Produto, Sessao } from '../../../types/cinema';
 import { formataHora, formataPreco } from '../../../utils/formatters';
 import { useCinema, useFilmes, useProdutos, useSessoes } from '../../../hooks';
-import { FilmeModal, Hero, Navbar, ProdutoModal, SecaoBomboniere, SecaoEmBreve, SecaoEmCartaz } from '../../../components/cinema';
+import { FilmeModal, Hero, MobileMenu, Navbar, ProdutoModal, SecaoBomboniere, SecaoEmBreve, SecaoEmCartaz } from '../../../components/cinema';
 import * as S from './CinemaHomePage.styles';
 
 export function CinemaHomePage() {
   const [filmeSelecionado, setFilmeSelecionado] = useState<Filme | null>(null);
   const [produtoSelecionado, setProdutoSelecionado] = useState<Produto | null>(null);
+  const [menuAberto, setMenuAberto] = useState(false);
 
   const { cinemas, cinemaSelecionado, setCinemaSelecionado } = useCinema();
   const idCinema = cinemaSelecionado?.idCinema;
@@ -23,6 +24,17 @@ export function CinemaHomePage() {
   return (
     <S.Main>
       <Navbar
+        search={busca}
+        onSearchChange={setBusca}
+        cinemas={cinemas}
+        cinemaSelecionado={cinemaSelecionado}
+        onCinemaChange={setCinemaSelecionado}
+        onMenuOpen={() => setMenuAberto(true)}
+      />
+
+      <MobileMenu
+        aberto={menuAberto}
+        onFechar={() => setMenuAberto(false)}
         search={busca}
         onSearchChange={setBusca}
         cinemas={cinemas}

@@ -42,7 +42,7 @@ export const Nav = styled.nav<{ $scrolled?: boolean }>`
 export const Logo = styled.a`
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 5px;
   font-weight: 800;
   font-size: 23px;
   letter-spacing: -0.04em;
@@ -150,6 +150,40 @@ export const Auth = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+`;
+
+export const CartBtn = styled.button`
+  position: relative;
+  font-family: inherit;
+  background: var(--surface);
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  transition: background .22s, border-color .22s;
+
+  svg { width: 20px; height: 20px; display: block; }
+  &:hover { background: var(--surface-hover); }
+`;
+
+export const CartBadge = styled.span`
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: var(--green);
+  color: var(--text-primary);
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
 `;
 
 export const BtnGhost = styled.button`

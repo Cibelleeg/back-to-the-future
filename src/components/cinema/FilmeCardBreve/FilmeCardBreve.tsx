@@ -1,6 +1,5 @@
 import type { Filme } from '../../../types/cinema';
 import { formataDuracao, formataData } from '../../../utils/formatters';
-import { classColors } from '../../../styles/theme';
 import { Badge } from '../../ui/Badge';
 import * as S from './FilmeCardBreve.styles';
 
@@ -10,14 +9,12 @@ interface FilmeCardBreveProps {
 }
 
 export function FilmeCardBreve({ filme, onClick }: FilmeCardBreveProps) {
-  const classificacaoStyle = classColors[filme.classificacao] || classColors.L;
-
   return (
     <S.Card onClick={onClick}>
       <S.Poster src={filme.poster} alt={filme.titulo} />
 
       <S.Classification>
-        <Badge label={filme.classificacao} $bg={classificacaoStyle.bg} $color={classificacaoStyle.text} />
+        <Badge label={filme.classificacao} />
       </S.Classification>
 
       <S.Overlay>

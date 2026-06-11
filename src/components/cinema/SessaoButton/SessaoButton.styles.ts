@@ -28,5 +28,5 @@ export const Badges = styled.div`
 
 export const PriceLabel = styled.span<{ $selected?: boolean }>`
   font-size: 11px;
-  color: ${({ $selected }) => ($selected ? 'var(--text-secondary-dim)' : 'var(--text-score)')};
+  color: ${({ $selected }) => ($selected ? 'var(--text-secondary)' : 'var(--text-score)')};
 `;

@@ -3,6 +3,7 @@ export { FilmeCard } from './FilmeCard';
 export { FilmeCardBreve } from './FilmeCardBreve';
 export { FilmeModal } from './FilmeModal';
 export { Hero } from './Hero';
+export { MobileMenu } from './MobileMenu';
 export { Navbar } from './Navbar';
 export { ProdutoCard } from './ProdutoCard';
 export { ProdutoModal } from './ProdutoModal';

@@ -2,39 +2,39 @@ import { useState } from 'react';
 import type { MouseEvent } from 'react';
 import type { Produto } from '../../../types/cinema';
 import { formataPreco } from '../../../utils/formatters';
+import { useCart } from '../../../contexts/useCart';
 import * as S from './ProdutoCard.styles';
 
 interface ProdutoCardProps {
   produto: Produto;
   onClick: () => void;
-  // TODO(carrinho): onQuantidadeChange quando o estado global de carrinho existir
-  onQuantidadeChange?: (idProduto: number, quantidade: number) => void;
 }
 
-export function ProdutoCard({ produto, onClick, onQuantidadeChange }: ProdutoCardProps) {
+export function ProdutoCard({ produto, onClick }: ProdutoCardProps) {
+  const { atualizar } = useCart();
   const [quantidade, setQuantidade] = useState(0);
   const [pop, setPop] = useState(false);
 
-  function atualizar(nova: number) {
+  function disparar(nova: number) {
     setQuantidade(nova);
     setPop(true);
     setTimeout(() => setPop(false), 150);
-    onQuantidadeChange?.(produto.idProduto, nova); // TODO(carrinho): conectar ao contexto/store
+    atualizar(produto, nova);
   }
 
   function adicionar(e: MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
-    atualizar(1);
+    disparar(1);
   }
 
   function incrementar(e: MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
-    atualizar(quantidade + 1);
+    disparar(quantidade + 1);
   }
 
   function decrementar(e: MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
-    if (quantidade > 0) atualizar(quantidade - 1);
+    if (quantidade > 0) disparar(quantidade - 1);
   }
 
   const on = quantidade > 0;
