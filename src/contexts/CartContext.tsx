@@ -1,6 +1,15 @@
-import { useState, type ReactNode } from 'react';
+import { createContext, useState, type ReactNode } from 'react';
 import type { CartItem, Produto } from '../types/cinema';
-import { CartContext } from './cartContext';
+
+export interface CartContextValue {
+  items: CartItem[];
+  count: number;
+  total: number;
+  atualizar: (produto: Produto, quantidade: number) => void;
+  limpar: () => void;
+}
+
+export const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
