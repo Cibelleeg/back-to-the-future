@@ -77,8 +77,8 @@ export function Navbar({ search, onSearchChange, cinemas, cinemaSelecionado, onC
           </svg>
           {count > 0 && <S.CartBadge>{count > 99 ? '99+' : count}</S.CartBadge>}
         </S.CartBtn>
-        <S.BtnGhost>Entrar</S.BtnGhost>
-        <S.BtnSolid>Cadastrar</S.BtnSolid>
+        <S.BtnGhost as={Link} to="/login">Entrar</S.BtnGhost>
+        <S.BtnSolid as={Link} to="/register">Cadastrar</S.BtnSolid>
         <S.Burger aria-label="Menu" onClick={onMenuOpen}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <path d="M4 7h16M4 12h16M4 17h16" />
