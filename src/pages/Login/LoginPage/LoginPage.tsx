@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import * as S from './LoginPage.styles';
 
@@ -6,32 +6,22 @@ export function LoginPage() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Estados de Controle da Tela
-    const [mode, setMode] = useState<'login' | 'signup'>('login');
+    const mode: 'login' | 'signup' = location.hash.includes('cadastr') ? 'signup' : 'login';
+
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Estados dos Campos do Formulário
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [termsAccepted, setTermsAccepted] = useState(false);
 
-    // Estados de Erro (Validação)
     const [errors, setErrors] = useState<Record<string, boolean>>({});
 
-    // Verifica o hash da URL para abrir no modo correto (/login#cadastrar)
-    useEffect(() => {
-        if (location.hash.includes('cadastr')) {
-            setMode('signup');
-        }
-    }, [location.hash]);
-
     const handleModeChange = (newMode: 'login' | 'signup') => {
-        setMode(newMode);
         setErrors({});
         setPassword('');
-        window.location.hash = newMode === 'signup' ? 'cadastrar' : 'entrar';
+        navigate({ hash: newMode === 'signup' ? 'cadastrar' : 'entrar' }, { replace: true });
     };
 
     // Validador simples de e-mail
@@ -48,7 +38,7 @@ export function LoginPage() {
         return Math.max(1, s);
     }, [password]);
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: { preventDefault(): void }) => {
         e.preventDefault();
         setErrors({});
         let ok = true;
