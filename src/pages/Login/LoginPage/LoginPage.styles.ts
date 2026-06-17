@@ -149,6 +149,18 @@ export const Perk = styled.div`
     flex-shrink: 0;
     svg { width: 18px; height: 18px; }
   }
+
+  p {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-top: 16px;
+  }
+
+  a.link {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+  }
 `;
 
 export const Panel = styled.section`
@@ -474,6 +486,20 @@ export const SocialBtn = styled(ButtonGlass)`
   &:active {
     transform: translateY(0);
   }
+`;
+
+export const SocialBtnWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 4px;
+`;
+
+export const TermsError = styled.span`
+  font-size: 12px;
+  color: #ff373e;
+  display: block;
+  margin-top: -8px;
 `;
 
 export const SwitchHintParagraph = styled.p`

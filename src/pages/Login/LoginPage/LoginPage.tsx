@@ -1,5 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
-import type { FormEvent } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import * as S from './LoginPage.styles';
 
@@ -28,10 +27,10 @@ export function LoginPage() {
         }
     }, [location.hash]);
 
-    // Função para alternar as abas limpando os erros locais e atualizando a URL de forma amigável
     const handleModeChange = (newMode: 'login' | 'signup') => {
         setMode(newMode);
         setErrors({});
+        setPassword('');
         window.location.hash = newMode === 'signup' ? 'cadastrar' : 'entrar';
     };
 
@@ -49,8 +48,7 @@ export function LoginPage() {
         return Math.max(1, s);
     }, [password]);
 
-    // Disparo do envio do formulário
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setErrors({});
         let ok = true;
@@ -70,6 +68,10 @@ export function LoginPage() {
         }
         if (mode === 'signup' && password.length < 8) {
             newErrors.password = true;
+            ok = false;
+        }
+        if (mode === 'signup' && !termsAccepted) {
+            newErrors.terms = true;
             ok = false;
         }
 
@@ -114,9 +116,9 @@ export function LoginPage() {
                             <path d="m12 2 2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21 8 14 2 9.4h7.6z" />
                         </svg>
                     </span>
-                    <p style={{ fontSize: '15px', color: 'var(--text-muted)', marginTop: '16px' }}>
+                    <p>
                         Membros do{' '}
-                        <Link to="/#clube" className="link" style={{ color: 'var(--primary)', fontWeight: '600', textDecoration: 'none' }}>
+                        <Link to="/#clube" className="link">
                             Clube
                         </Link>{' '}
                         ganham 1 pipoca grátis por mês.
@@ -153,15 +155,15 @@ export function LoginPage() {
                     </S.TabsContainer>
 
                     <S.FormContainer onSubmit={handleSubmit} noValidate>
-                        {/* Campo Nome completo - Apenas no Cadastro */}
                         {mode === 'signup' && (
                             <S.Field className={errors.name ? 'err' : ''}>
-                                <label>Nome completo</label>
+                                <label htmlFor="name">Nome completo</label>
                                 <S.InputWrapper>
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                         <circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" />
                                     </svg>
                                     <input
+                                        id="name"
                                         type="text"
                                         name="nome"
                                         placeholder="Seu nome"
@@ -174,14 +176,14 @@ export function LoginPage() {
                             </S.Field>
                         )}
 
-                        {/* Campo E-mail */}
                         <S.Field className={errors.email ? 'err' : ''}>
-                            <label>E-mail</label>
+                            <label htmlFor="email">E-mail</label>
                             <S.InputWrapper>
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                     <rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" />
                                 </svg>
                                 <input
+                                    id="email"
                                     type="email"
                                     name="email"
                                     placeholder="voce@email.com"
@@ -193,22 +195,23 @@ export function LoginPage() {
                             <span className="msg">Informe um e-mail válido.</span>
                         </S.Field>
 
-                        {/* Campo Senha */}
                         <S.Field className={errors.password ? 'err' : ''}>
-                            <label>Senha</label>
+                            <label htmlFor="password">Senha</label>
                             <S.InputWrapper>
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                     <rect x="4" y="11" width="16" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" />
                                 </svg>
                                 <input
+                                    id="password"
                                     type={showPassword ? 'text' : 'password'}
                                     name="senha"
                                     placeholder={mode === 'signup' ? 'Mínimo 8 caracteres' : '••••••••'}
+                                    autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
                                     value={password}
                                     onChange={e => { setPassword(e.target.value); clearError('password'); }}
                                 />
 
-                                <S.EyeButton type="button" aria-label="Mostrar senha" onClick={() => setShowPassword(!showPassword)}>
+                                <S.EyeButton type="button" aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'} onClick={() => setShowPassword(!showPassword)}>
                                     {showPassword ? (
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                                             <path d="M2 12s3.5-7 10-7c2 0 3.8.6 5.3 1.5M22 12s-3.5 7-10 7c-2 0-3.8-.6-5.3-1.5" /><path d="m4 4 16 16" />
@@ -221,14 +224,12 @@ export function LoginPage() {
                                 </S.EyeButton>
                             </S.InputWrapper>
 
-                            {/* Medidor de força de senha - Apenas no Cadastro */}
                             {mode === 'signup' && (
-                                <S.StrengthMeter data-level={passStrength}><i></i><i></i><i></i><i></i></S.StrengthMeter>
+                                <S.StrengthMeter data-level={passStrength} aria-label="Força da senha"><i></i><i></i><i></i><i></i></S.StrengthMeter>
                             )}
                             <span className="msg">{mode === 'signup' ? 'A senha precisa de pelo menos 8 caracteres.' : 'Digite sua senha.'}</span>
                         </S.Field>
 
-                        {/* Rodapé do Formulário Dinâmico */}
                         {mode === 'login' ? (
                             <S.FormRow>
                                 <label className="check">
@@ -243,24 +244,29 @@ export function LoginPage() {
                                 <Link to="#" className="link">Esqueci a senha</Link>
                             </S.FormRow>
                         ) : (
-                            <S.FormRow>
-                                <label className="check">
-                                    <input
-                                        type="checkbox"
-                                        id="terms"
-                                        checked={termsAccepted}
-                                        onChange={e => setTermsAccepted(e.target.checked)}
-                                    />
-                                    <span className="box">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M20 6 9 17l-5-5" />
-                                        </svg>
-                                    </span>
-                                    <span>
-                                        Li e aceito os <Link to="#" className="link">termos de uso</Link>.
-                                    </span>
-                                </label>
-                            </S.FormRow>
+                            <>
+                                <S.FormRow>
+                                    <label className="check" htmlFor="terms">
+                                        <input
+                                            type="checkbox"
+                                            id="terms"
+                                            checked={termsAccepted}
+                                            onChange={e => { setTermsAccepted(e.target.checked); clearError('terms'); }}
+                                        />
+                                        <span className="box">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M20 6 9 17l-5-5" />
+                                            </svg>
+                                        </span>
+                                        <span>
+                                            Li e aceito os <Link to="#" className="link">termos de uso</Link>.
+                                        </span>
+                                    </label>
+                                </S.FormRow>
+                                {errors.terms && (
+                                    <S.TermsError>Você precisa aceitar os termos para continuar.</S.TermsError>
+                                )}
+                            </>
                         )}
 
                         {/* Botão de Envio */}
@@ -270,11 +276,10 @@ export function LoginPage() {
                                 : (mode === 'login' ? 'Entrar' : 'Criar conta')}
                         </S.SubmitBtn>
 
-                        {/* Divisor Social - Apenas no Login */}
                         {mode === 'login' && (
                             <>
                                 <S.Divider>ou continue com</S.Divider>
-                                <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '4px' }}>
+                                <S.SocialBtnWrapper>
                                     <S.SocialBtn type="button">
                                         <svg viewBox="0 0 24 24">
                                             <path fill='var(--bg-primary)' d="M21.8 12.2c0-.7-.1-1.3-.2-2H12v3.8h5.5a4.7 4.7 0 0 1-2 3.1v2.6h3.3c1.9-1.8 3-4.4 3-7.5z" opacity=".9" />
@@ -282,7 +287,7 @@ export function LoginPage() {
                                         </svg>
                                         Google
                                     </S.SocialBtn>
-                                </div>
+                                </S.SocialBtnWrapper>
                             </>
                         )}
                     </S.FormContainer>
