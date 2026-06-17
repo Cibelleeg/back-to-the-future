@@ -42,8 +42,8 @@ export const Stage = styled.section`
   justify-content: space-between;
   background:
     radial-gradient(900px 600px at 20% 10%, var(--primary-subtle), transparent 60%),
-    radial-gradient(700px 500px at 90% 90%, rgba(33, 90, 54, 0.5), transparent 55%),
-    linear-gradient(160deg, #0c100d, #060706);
+    radial-gradient(700px 500px at 90% 90%, var(--success-bg), transparent 55%),
+    linear-gradient(160deg, var(--hero-gradient-start), var(--hero-gradient-end));
 
   &::after {
     content: "";
@@ -119,7 +119,7 @@ export const PostersContainer = styled.div`
     box-shadow: 0 18px 40px -20px #000;
     transition: transform .35s;
 
-    &:nth-child(1) { background: linear-gradient(160deg, #2a7d52, #11331f); transform: rotate(-6deg); }
+    &:nth-child(1) { background: linear-gradient(160deg, var(--success), var(--success-bg)); transform: rotate(-6deg); }
     &:nth-child(2) { background: linear-gradient(160deg, #3a6f88, #16323f); margin-top: -8px; }
     &:nth-child(3) { background: linear-gradient(160deg, #7a5a8c, #2e2238); transform: rotate(6deg); }
   }
@@ -153,7 +153,10 @@ export const Perk = styled.div`
 
 export const Panel = styled.section`
   width: min(480px, 46%);
-  background: var(--bg-secondary);
+  
+  /* ALTERADO: Trocando o cinza-azulado pelo preto do app */
+  background: #060706; 
+  
   border-left: 1px solid var(--border-primary);
   padding: 46px clamp(28px, 4vw, 56px);
   display: flex;
@@ -166,7 +169,6 @@ export const Panel = styled.section`
     flex: 1;
   }
 `;
-
 export const PanelInner = styled.div`
   width: 100%;
   max-width: 360px;
@@ -259,7 +261,7 @@ export const Field = styled.div`
 
   .msg {
     font-size: 12px;
-    color: #ff5a5f;
+    color: #ff373e;
     margin-top: 6px;
     display: none;
   }
@@ -267,7 +269,7 @@ export const Field = styled.div`
   &.err {
     animation: ${shake} .35s;
     input {
-      border-color: #ff5a5f;
+      border-color: #ff373e;
       box-shadow: 0 0 0 4px rgba(255, 90, 95, 0.14);
     }
     .msg { display: block; }
@@ -366,8 +368,8 @@ export const StrengthMeter = styled.div`
     transition: background .25s;
   }
 
-  &[data-level="1"] i:nth-child(1) { background: #ff5a5f; }
-  &[data-level="2"] i:nth-child(-n+2) { background: #e0a83c; }
+  &[data-level="1"] i:nth-child(1) { background: #ff373e; }
+  &[data-level="2"] i:nth-child(-n+2) { background: #f5c842; }
   &[data-level="3"] i:nth-child(-n+3) { background: var(--primary); }
   &[data-level="4"] i { background: var(--primary); }
 `;

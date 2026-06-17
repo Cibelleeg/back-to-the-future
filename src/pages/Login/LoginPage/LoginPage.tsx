@@ -79,8 +79,6 @@ export function LoginPage() {
         }
 
         setIsLoading(true);
-
-        // Simulação da chamada da API do Backend (pulp-fiction)
         setTimeout(() => {
             setIsLoading(false);
             navigate('/');
@@ -116,7 +114,13 @@ export function LoginPage() {
                             <path d="m12 2 2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21 8 14 2 9.4h7.6z" />
                         </svg>
                     </span>
-                    Membros do Clube ganham 1 pipoca grátis por mês.
+                    <p style={{ fontSize: '15px', color: 'var(--text-muted)', marginTop: '16px' }}>
+                        Membros do{' '}
+                        <Link to="/#clube" className="link" style={{ color: 'var(--primary)', fontWeight: '600', textDecoration: 'none' }}>
+                            Clube
+                        </Link>{' '}
+                        ganham 1 pipoca grátis por mês.
+                    </p>
                 </S.Perk>
             </S.Stage>
 
@@ -204,7 +208,6 @@ export function LoginPage() {
                                     onChange={e => { setPassword(e.target.value); clearError('password'); }}
                                 />
 
-                                {/* GARANTA QUE ESTÁ EXATAMENTE ASSIM (Sem className="eye"): */}
                                 <S.EyeButton type="button" aria-label="Mostrar senha" onClick={() => setShowPassword(!showPassword)}>
                                     {showPassword ? (
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -226,7 +229,6 @@ export function LoginPage() {
                         </S.Field>
 
                         {/* Rodapé do Formulário Dinâmico */}
-
                         {mode === 'login' ? (
                             <S.FormRow>
                                 <label className="check">
@@ -241,7 +243,6 @@ export function LoginPage() {
                                 <Link to="#" className="link">Esqueci a senha</Link>
                             </S.FormRow>
                         ) : (
-                            /* CORRIGIDO: Agora usa o S.FormRow para envelopar e travar o tamanho do campo */
                             <S.FormRow>
                                 <label className="check">
                                     <input
@@ -251,7 +252,6 @@ export function LoginPage() {
                                         onChange={e => setTermsAccepted(e.target.checked)}
                                     />
                                     <span className="box">
-                                        {/* CORRIGIDO: viewBox ajustado para 0 0 24 24 para o check aparecer */}
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M20 6 9 17l-5-5" />
                                         </svg>
@@ -271,18 +271,14 @@ export function LoginPage() {
                         </S.SubmitBtn>
 
                         {/* Divisor Social - Apenas no Login */}
-                        {/* Divisor Social - Apenas no Login */}
                         {mode === 'login' && (
                             <>
                                 <S.Divider>ou continue com</S.Divider>
-
-                                {/* Envelopamos em um container centralizado para o botão não esticar 100% */}
                                 <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '4px' }}>
                                     <S.SocialBtn type="button">
-                                        {/* CORRIGIDO: viewBox voltou para 0 0 24 24 para o ícone aparecer no tamanho certo */}
                                         <svg viewBox="0 0 24 24">
-                                            <path fill="#fff" d="M21.8 12.2c0-.7-.1-1.3-.2-2H12v3.8h5.5a4.7 4.7 0 0 1-2 3.1v2.6h3.3c1.9-1.8 3-4.4 3-7.5z" opacity=".9" />
-                                            <path fill="#1f9e57" d="M12 22c2.7 0 4.9-.9 6.6-2.4l-3.3-2.6c-.9.6-2 1-3.3 1-2.6 0-4.7-1.7-5.5-4.1H3.1v2.6A10 10 0 0 0 12 22z" />
+                                            <path fill='var(--bg-primary)' d="M21.8 12.2c0-.7-.1-1.3-.2-2H12v3.8h5.5a4.7 4.7 0 0 1-2 3.1v2.6h3.3c1.9-1.8 3-4.4 3-7.5z" opacity=".9" />
+                                            <path fill='var(--primary)' d="M12 22c2.7 0 4.9-.9 6.6-2.4l-3.3-2.6c-.9.6-2 1-3.3 1-2.6 0-4.7-1.7-5.5-4.1H3.1v2.6A10 10 0 0 0 12 22z" />
                                         </svg>
                                         Google
                                     </S.SocialBtn>
@@ -291,7 +287,6 @@ export function LoginPage() {
                         )}
                     </S.FormContainer>
 
-                    {/* Texto Inferior de Alternância */}
                     <S.SwitchHintParagraph>
                         {mode === 'login' ? 'Ainda não tem conta? ' : 'Já é membro? '}
                         <button type="button" onClick={() => handleModeChange(mode === 'login' ? 'signup' : 'login')}>
