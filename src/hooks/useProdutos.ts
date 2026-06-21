@@ -6,20 +6,13 @@ import { extrairCategorias, filtrarProdutos } from '../services/produtoService';
 import { config } from '../config';
 
 export function useProdutos(idCinema?: number) {
-  const [allProdutos, setAllProdutos]               = useState<Produto[]>([]);
-  const [isLoading, setIsLoading]                   = useState(true);
+  const [allProdutos, setAllProdutos]               = useState<Produto[]>(() => config.useMock ? PRODUTOS : []);
+  const [isLoading, setIsLoading]                   = useState(!config.useMock);
   const [error, setError]                           = useState<string | null>(null);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState('Todos');
 
   useEffect(() => {
-    if (config.useMock) {
-      setAllProdutos(PRODUTOS);
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
+    if (config.useMock) return;
 
     fetchProdutos()
       .then(setAllProdutos)

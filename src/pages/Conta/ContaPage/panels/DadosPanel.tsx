@@ -3,17 +3,20 @@ import { useUserInfo } from '../../../../hooks';
 import { fetchMe, setUserInfo, updateUserProfile } from '../../../../services/api';
 import { config } from '../../../../config';
 import { isoToBrDate, parseBrDate, maskDate, maskCpf, maskPhone } from '../../../../utils/masks';
+import type { UserInfo } from '../../../../services/api';
 import * as S from '../ContaPage.styles';
 
-export function DadosPanel() {
-  const userInfo = useUserInfo();
-
-  const toForm = (info: typeof userInfo) => ({
+function toForm(info: UserInfo | null) {
+  return {
     nome: info?.name || '',
     cpf: info?.cpf ? maskCpf(info.cpf) : '',
     telefone: info?.phoneNumber ? maskPhone(info.phoneNumber) : '',
     nascimento: info?.birthDate ? isoToBrDate(info.birthDate) : '',
-  });
+  };
+}
+
+export function DadosPanel() {
+  const userInfo = useUserInfo();
 
   const [form, setForm] = useState(() => toForm(userInfo));
   const [status, setStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
