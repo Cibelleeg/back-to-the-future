@@ -5,20 +5,13 @@ import { fetchCinemas } from '../services/api';
 import { config } from '../config';
 
 export function useCinema() {
-  const [cinemas, setCinemas]                     = useState<Cinema[]>([]);
+  const [cinemas, setCinemas]                     = useState<Cinema[]>(() => config.useMock ? CINEMAS : []);
   const [cinemaSelecionado, setCinemaSelecionado] = useState<Cinema | null>(null);
-  const [isLoading, setIsLoading]                 = useState(true);
+  const [isLoading, setIsLoading]                 = useState(!config.useMock);
   const [error, setError]                         = useState<string | null>(null);
 
   useEffect(() => {
-    if (config.useMock) {
-      setCinemas(CINEMAS);
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
+    if (config.useMock) return;
 
     fetchCinemas()
       .then(setCinemas)

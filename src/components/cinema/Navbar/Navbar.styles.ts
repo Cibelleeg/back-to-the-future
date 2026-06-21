@@ -241,7 +241,10 @@ export const UserWrapper = styled.div`
 `;
 
 export const UserBtn = styled.button`
-  font-family: inherit;
+  font-family: 'Bricolage Grotesque', 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.01em;
   width: 40px;
   height: 40px;
   border-radius: 50%;

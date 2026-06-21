@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { login, register, setAuthToken } from '../../../services/api';
+import { login, register, setAuthToken, setUserInfo } from '../../../services/api';
 import { config } from '../../../config';
 import * as S from './LoginPage.styles';
 
@@ -76,6 +76,8 @@ export function LoginPage() {
         setIsLoading(true);
 
         if (config.useMock) {
+            setAuthToken('mock-token-dev');
+            setUserInfo({ name: mode === 'signup' ? name.trim() || undefined : undefined, email });
             setTimeout(() => { setIsLoading(false); navigate('/'); }, 800);
             return;
         }
@@ -83,12 +85,14 @@ export function LoginPage() {
         try {
             if (mode === 'signup') {
                 await register(name, email, password);
-                const token = await login(email, password);
-                setAuthToken(token);
-            } else {
-                const token = await login(email, password);
-                setAuthToken(token);
             }
+            const { token, name: apiName, userEmail: apiEmail, userId } = await login(email, password);
+            setAuthToken(token);
+            setUserInfo({
+                id: userId,
+                name: apiName || (mode === 'signup' ? name.trim() : undefined),
+                email: apiEmail || email,
+            });
             navigate('/');
         } catch (err) {
             setApiError(err instanceof Error ? err.message : 'Email ou senha inválidos.');

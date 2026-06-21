@@ -4,6 +4,7 @@ import { Home } from './pages/Home';
 import { FilmesPage } from './pages/Filmes';
 import { CinemasPage } from './pages/Cinemas';
 import LoginPage from "./pages/Login";
+import { ContaPage } from './pages/Conta';
 import './styles/global.css';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Route path="/filmes"  element={<FilmesPage />} />
           <Route path="/cinemas" element={<CinemasPage />}/>
           <Route path="/login" element={<LoginPage />}/>
+          <Route path="/conta" element={<ContaPage />}/>
         </Routes>
       </CartProvider>
     </BrowserRouter>

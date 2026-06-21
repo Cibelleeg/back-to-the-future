@@ -6,19 +6,12 @@ import { fetchSessoes } from '../services/api';
 import { agruparSessoesPorFilme } from '../services/sessaoService';
 
 export function useSessoes(idCinema?: number) {
-  const [allSessoes, setAllSessoes] = useState<Sessao[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [allSessoes, setAllSessoes] = useState<Sessao[]>(() => config.useMock ? SESSOES : []);
+  const [isLoading, setIsLoading] = useState(!config.useMock);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (config.useMock) {
-      setAllSessoes(SESSOES);
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
+    if (config.useMock) return;
 
     fetchSessoes()
       .then(setAllSessoes)

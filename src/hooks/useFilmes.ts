@@ -6,22 +6,15 @@ import { extrairGeneros, filtrarFilmesEmBreve, filtrarFilmesEmCartaz } from '../
 import { config } from '../config';
 
 export function useFilmes(idCinema?: number, sessoes: Sessao[] = SESSOES) {
-  const [allFilmes, setAllFilmes] = useState<Filme[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [allFilmes, setAllFilmes] = useState<Filme[]>(() => config.useMock ? FILMES : []);
+  const [isLoading, setIsLoading] = useState(!config.useMock);
   const [error, setError]         = useState<string | null>(null);
 
   const [generoSelecionado, setGeneroSelecionado] = useState('Todos');
   const [busca, setBusca] = useState('');
 
   useEffect(() => {
-    if (config.useMock) {
-      setAllFilmes(FILMES);
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
+    if (config.useMock) return;
 
     fetchFilmes()
       .then(setAllFilmes)
