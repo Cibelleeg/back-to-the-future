@@ -1,5 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { login, register, setAuthToken } from '../../../services/api';
+import { config } from '../../../config';
 import * as S from './LoginPage.styles';
 
 export function LoginPage() {
@@ -17,6 +19,7 @@ export function LoginPage() {
     const [termsAccepted, setTermsAccepted] = useState(false);
 
     const [errors, setErrors] = useState<Record<string, boolean>>({});
+    const [apiError, setApiError] = useState<string | null>(null);
 
     const handleModeChange = (newMode: 'login' | 'signup') => {
         setErrors({});
@@ -24,10 +27,9 @@ export function LoginPage() {
         navigate({ hash: newMode === 'signup' ? 'cadastrar' : 'entrar' }, { replace: true });
     };
 
-    // Validador simples de e-mail
+
     const isEmailValid = (v: string) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
 
-    // Cálculo dinâmico da força da senha (useMemo para recalcular apenas se a senha mudar)
     const passStrength = useMemo(() => {
         if (!password) return 0;
         let s = 0;
@@ -38,9 +40,10 @@ export function LoginPage() {
         return Math.max(1, s);
     }, [password]);
 
-    const handleSubmit = (e: { preventDefault(): void }) => {
+    const handleSubmit = async (e: { preventDefault(): void }) => {
         e.preventDefault();
         setErrors({});
+        setApiError(null);
         let ok = true;
         const newErrors: Record<string, boolean> = {};
 
@@ -71,10 +74,27 @@ export function LoginPage() {
         }
 
         setIsLoading(true);
-        setTimeout(() => {
-            setIsLoading(false);
+
+        if (config.useMock) {
+            setTimeout(() => { setIsLoading(false); navigate('/'); }, 800);
+            return;
+        }
+
+        try {
+            if (mode === 'signup') {
+                await register(name, email, password);
+                const token = await login(email, password);
+                setAuthToken(token);
+            } else {
+                const token = await login(email, password);
+                setAuthToken(token);
+            }
             navigate('/');
-        }, 1400);
+        } catch (err) {
+            setApiError(err instanceof Error ? err.message : 'Email ou senha inválidos.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const clearError = (field: string) => {
@@ -259,7 +279,8 @@ export function LoginPage() {
                             </>
                         )}
 
-                        {/* Botão de Envio */}
+                        {apiError && <S.ApiError>{apiError}</S.ApiError>}
+
                         <S.SubmitBtn type="submit" disabled={isLoading}>
                             {isLoading
                                 ? (mode === 'login' ? 'Entrando…' : 'Criando conta…')

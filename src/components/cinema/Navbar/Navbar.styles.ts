@@ -235,3 +235,74 @@ export const Burger = styled.button`
 
   @media (max-width: 1080px) { display: block; }
 `;
+
+export const UserWrapper = styled.div`
+  position: relative;
+`;
+
+export const UserBtn = styled.button`
+  font-family: inherit;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+  background: var(--surface);
+  color: var(--primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .22s, box-shadow .22s;
+  box-shadow: 0 0 0 0 var(--primary-transparent);
+
+  svg { width: 20px; height: 20px; display: block; }
+
+  &:hover {
+    background: var(--surface-hover);
+    box-shadow: 0 0 0 4px var(--primary-transparent);
+  }
+`;
+
+export const UserDropdown = styled.div<{ $open: boolean }>`
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 160px;
+  background: var(--glass-bg, var(--surface));
+  border: 1px solid var(--border-glass);
+  border-radius: 14px;
+  padding: 6px;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 12px 32px -8px rgba(0,0,0,.45);
+  z-index: 100;
+
+  opacity: ${({ $open }) => ($open ? 1 : 0)};
+  pointer-events: ${({ $open }) => ($open ? 'auto' : 'none')};
+  transform: ${({ $open }) => ($open ? 'translateY(0)' : 'translateY(-6px)')};
+  transition: opacity .18s ease, transform .18s ease;
+`;
+
+export const UserDropdownItem = styled.button`
+  font-family: inherit;
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background .18s;
+
+  svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--text-muted); }
+
+  &:hover { background: var(--surface-hover); }
+
+  &.danger { color: #ff4d4f; }
+  &.danger svg { color: #ff4d4f; }
+`;
