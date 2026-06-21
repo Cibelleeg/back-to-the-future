@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import type { Cinema } from '../../../types/cinema';
 import { useCart } from '../../../contexts/useCart';
+import { useAuth } from '../../../hooks';
 import { CinemaSelector } from '../CinemaSelector';
 import * as S from './Navbar.styles';
 
@@ -24,14 +25,27 @@ const LINKS = [
 
 export function Navbar({ search, onSearchChange, cinemas, cinemaSelecionado, onCinemaChange, onMenuOpen }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const { count } = useCart();
   const { pathname } = useLocation();
+  const { isLoggedIn, logout } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const onClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onClickOutside);
+    return () => document.removeEventListener('mousedown', onClickOutside);
   }, []);
 
   return (
@@ -77,8 +91,32 @@ export function Navbar({ search, onSearchChange, cinemas, cinemaSelecionado, onC
           </svg>
           {count > 0 && <S.CartBadge>{count > 99 ? '99+' : count}</S.CartBadge>}
         </S.CartBtn>
-        <S.BtnGhost as={Link} to="/login#entrar">Entrar</S.BtnGhost>
-        <S.BtnSolid as={Link} to="/login#cadastrar">Cadastrar</S.BtnSolid>
+
+        {isLoggedIn ? (
+          <S.UserWrapper ref={dropdownRef}>
+            <S.UserBtn aria-label="Menu do usuário" onClick={() => setDropdownOpen(o => !o)}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" />
+              </svg>
+            </S.UserBtn>
+            <S.UserDropdown $open={dropdownOpen}>
+              <S.UserDropdownItem className="danger" onClick={() => { setDropdownOpen(false); logout(); }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+                Sair
+              </S.UserDropdownItem>
+            </S.UserDropdown>
+          </S.UserWrapper>
+        ) : (
+          <>
+            <S.BtnGhost as={Link} to="/login#entrar">Entrar</S.BtnGhost>
+            <S.BtnSolid as={Link} to="/login#cadastrar">Cadastrar</S.BtnSolid>
+          </>
+        )}
+
         <S.Burger aria-label="Menu" onClick={onMenuOpen}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <path d="M4 7h16M4 12h16M4 17h16" />

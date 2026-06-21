@@ -13,12 +13,25 @@ export function CinemaHomePage() {
   const { cinemas, cinemaSelecionado, setCinemaSelecionado } = useCinema();
   const idCinema = cinemaSelecionado?.idCinema;
 
-  const { filmeDestaque, filmesEmCartaz, filmesEmBreve, generos, generoSelecionado, setGeneroSelecionado, busca, setBusca } = useFilmes(idCinema);
+  const { sessoes, sessoesPorFilme, error: sessoesError } = useSessoes(idCinema);
+  const { filmeDestaque, filmesEmCartaz, filmesEmBreve, generos, generoSelecionado, setGeneroSelecionado, busca, setBusca, error } = useFilmes(idCinema, sessoes);
   const { produtosFiltrados, categorias, categoriaSelecionada, setCategoriaSelecionada } = useProdutos(idCinema);
-  const { sessoesPorFilme } = useSessoes(idCinema);
 
   function handleBuy(filme: Filme, sessao: Sessao) {
     alert(`Redirecionando para compra:\n${filme.titulo}\n${formataHora(sessao.dataHora)} · ${sessao.formato} · ${formataPreco(sessao.precoBase)}`);
+  }
+
+  const pageError = error ?? sessoesError;
+
+  if (pageError) {
+    return (
+      <S.Main>
+        <S.StatusContainer>
+          <S.ErrorMessage>Não foi possível carregar os dados. Tente novamente mais tarde.</S.ErrorMessage>
+          <S.ErrorMessage style={{ fontSize: 12, opacity: 0.6 }}>{pageError}</S.ErrorMessage>
+        </S.StatusContainer>
+      </S.Main>
+    );
   }
 
   return (

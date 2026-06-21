@@ -495,6 +495,16 @@ export const SocialBtnWrapper = styled.div`
   margin-top: 4px;
 `;
 
+export const ApiError = styled.p`
+  font-size: 13px;
+  color: #ff373e;
+  text-align: center;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(255, 55, 62, 0.08);
+  border: 1px solid rgba(255, 55, 62, 0.2);
+`;
+
 export const TermsError = styled.span`
   font-size: 12px;
   color: #ff373e;
