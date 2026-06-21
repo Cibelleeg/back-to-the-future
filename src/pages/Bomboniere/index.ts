@@ -1,0 +1,1 @@
+export { BombonierePage } from './BombonierePage';

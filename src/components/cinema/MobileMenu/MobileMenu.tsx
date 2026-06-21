@@ -7,8 +7,8 @@ import * as S from './MobileMenu.styles';
 interface MobileMenuProps {
   aberto: boolean;
   onFechar: () => void;
-  search: string;
-  onSearchChange: (v: string) => void;
+  search?: string;
+  onSearchChange?: (v: string) => void;
   cinemas: Cinema[];
   cinemaSelecionado: Cinema | null;
   onCinemaChange: (c: Cinema | null) => void;
@@ -17,7 +17,7 @@ interface MobileMenuProps {
 const LINKS = [
   { label: 'Filmes',     to: '/filmes' },
   { label: 'Cinemas',    to: '/cinemas' },
-  { label: 'Bomboniere', to: '/#bomboniere' },
+  { label: 'Bomboniere', to: '/bomboniere' },
   { label: 'Eventos',    to: '/#eventos' },
   { label: 'Clube',      to: '/#clube' },
 ];
@@ -59,12 +59,14 @@ export function MobileMenu({ aberto, onFechar, search, onSearchChange, cinemas, 
           </S.CloseBtn>
         </S.Header>
 
-        <S.Search>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
-          </svg>
-          <input value={search} onChange={(e) => onSearchChange(e.target.value)} placeholder="Buscar filme…" />
-        </S.Search>
+        {onSearchChange && (
+          <S.Search>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
+            </svg>
+            <input value={search ?? ''} onChange={(e) => onSearchChange(e.target.value)} placeholder="Buscar filme…" />
+          </S.Search>
+        )}
 
         <S.Divider />
 
