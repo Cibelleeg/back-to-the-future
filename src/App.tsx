@@ -6,6 +6,7 @@ import { CinemasPage } from './pages/Cinemas';
 import { BombonierePage } from './pages/Bomboniere';
 import LoginPage from "./pages/Login";
 import { ContaPage } from './pages/Conta';
+import { EquipePage } from './pages/Equipe';
 import './styles/global.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/filmes"      element={<FilmesPage />} />
           <Route path="/cinemas"     element={<CinemasPage />}/>
           <Route path="/bomboniere"  element={<BombonierePage />}/>
+          <Route path="/equipe" element={<EquipePage />}/>
           <Route path="/login" element={<LoginPage />}/>
           <Route path="/conta" element={<ContaPage />}/>
         </Routes>

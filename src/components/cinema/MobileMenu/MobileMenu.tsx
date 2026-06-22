@@ -18,8 +18,7 @@ const LINKS = [
   { label: 'Filmes',     to: '/filmes' },
   { label: 'Cinemas',    to: '/cinemas' },
   { label: 'Bomboniere', to: '/bomboniere' },
-  { label: 'Eventos',    to: '/#eventos' },
-  { label: 'Clube',      to: '/#clube' },
+  { label: 'Equipe',     to: '/equipe' },
 ];
 
 export function MobileMenu({ aberto, onFechar, search, onSearchChange, cinemas, cinemaSelecionado, onCinemaChange }: MobileMenuProps) {

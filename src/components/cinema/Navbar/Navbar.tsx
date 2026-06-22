@@ -19,8 +19,7 @@ const LINKS = [
   { label: 'Filmes',     to: '/filmes' },
   { label: 'Cinemas',    to: '/cinemas' },
   { label: 'Bomboniere', to: '/bomboniere' },
-  { label: 'Eventos',    to: '/#eventos' },
-  { label: 'Clube',      to: '/#clube' },
+  { label: 'Equipe',     to: '/equipe' },
 ];
 
 export function Navbar({ search, onSearchChange, cinemas, cinemaSelecionado, onCinemaChange, onMenuOpen }: NavbarProps) {
