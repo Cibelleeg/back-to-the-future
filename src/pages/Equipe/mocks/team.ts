@@ -33,4 +33,12 @@ export const TEAM_MEMBERS: TeamMember[] = [
     image: '/team/Cibelle.png',
     alt: 'Cibelle, menina risonha que ri e que sonha',
   },
+  {
+    name: 'Anabe, esposa da Cibelle',
+    role: 'Membro honorário, dona do meu <3',
+    bio: 'Responsável por ser a menina mais linda gatinha unteligente matcomper dona do meu coração.',
+    github: 'https://github.com/anabeatriz-scalabrini',
+    image: '/team/Anabe.png',
+    alt: 'Anabe, menina risonha que ri e que sonha',
+  },
 ];
