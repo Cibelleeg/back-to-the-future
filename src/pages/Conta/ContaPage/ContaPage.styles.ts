@@ -527,16 +527,6 @@ export const ReviewRow = styled.div`
   margin-bottom: 9px;
 `;
 
-export const Stars = styled.span`
-  display: inline-flex;
-  gap: 2px;
-  svg {
-    width: 16px; height: 16px;
-    &.on  { fill: #2fc46e; stroke: none; }
-    &.off { fill: none; stroke: rgba(255, 255, 255, 0.2); stroke-width: 1.6px; }
-  }
-`;
-
 export const ReviewDate = styled.span`
   font-size: 12px;
   color: var(--text-muted);

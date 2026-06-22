@@ -1,0 +1,41 @@
+import type { MockOrder } from './types';
+
+export const ORDERS: MockOrder[] = [
+  {
+    id: '1',
+    title: 'Duna: Parte Dois',
+    cinema: 'CINEFESP São José dos Campos',
+    date: '28 jun, 19h40',
+    room: 'Sala 3 · 3D',
+    seats: ['F7', 'F8'],
+    extras: 'Bomboniere: 1 pipoca grande · 2 refrigerantes',
+    status: 'confirmado',
+    total: 'R$ 78,00',
+    totalNote: '1 inteira + 1 meia',
+    code: '#PED-2026-0412',
+  },
+  {
+    id: '2',
+    title: 'Cidade de Deus',
+    cinema: 'CINEFESP São José dos Campos',
+    date: '10 jun, 21h00',
+    room: 'Sala 1 · 2D',
+    seats: ['C12'],
+    status: 'utilizado',
+    total: 'R$ 16,00',
+    totalNote: '1 meia',
+    code: '#PED-2026-0388',
+  },
+  {
+    id: '3',
+    title: 'Bacurau',
+    cinema: 'CINEFESP São José dos Campos',
+    date: '02 jun, 18h30',
+    room: 'Sala 2 · 2D',
+    seats: ['D5', 'D6'],
+    status: 'cancelado',
+    total: 'R$ 44,00',
+    totalNote: 'Reembolsado',
+    code: '#PED-2026-0351',
+  },
+];

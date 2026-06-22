@@ -15,15 +15,25 @@ import type {
 
 export interface FilmeDTO {
   id: number;
-  title: string;
-  synopsis: string;
-  duration: number;
-  ageRating: number;
-  genre: string;
-  releaseDate: string;
-  endDate?: string;
-  poster?: string;
-  rating?: number; 
+  title?: string;
+  titulo?: string;
+  synopsis?: string;
+  sinopse?: string;
+  duration?: number;
+  duracao?: number;
+  ageRating?: number;
+  classificacao?: number;
+  genre?: string;
+  genero?: string;
+  generos?: string[];
+  releaseDate?: string;
+  dataLancamento?: string;
+  endDate?: string | null;
+  dataFimCartaz?: string | null;
+  poster?: string | null;
+  posterUrl?: string | null;
+  rating?: number;
+  media?: number;
 }
 
 export interface CinemaDTO {
@@ -81,17 +91,19 @@ export function mapClassificacao(n: number): Classificacao {
 }
 
 export function mapFilmeDTO(dto: FilmeDTO): Filme {
+  const genero = dto.genre ?? dto.genero ?? dto.generos?.[0] ?? '';
+
   return {
     idFilme: dto.id as FilmeId,
-    titulo: dto.title,
-    sinopse: dto.synopsis,
-    duracao: dto.duration,
-    classificacao: mapClassificacao(dto.ageRating),
-    genero: dto.genre,
-    dataLancamento: dto.releaseDate,
-    dataFimCartaz: dto.endDate ?? '2099-12-31',
-    poster: dto.poster ?? '',
-    nota: dto.rating ?? 0,
+    titulo: dto.title ?? dto.titulo ?? '',
+    sinopse: dto.synopsis ?? dto.sinopse ?? '',
+    duracao: dto.duration ?? dto.duracao ?? 0,
+    classificacao: mapClassificacao(dto.ageRating ?? dto.classificacao ?? 0),
+    genero,
+    dataLancamento: dto.releaseDate ?? dto.dataLancamento ?? `${dto.id ? new Date().getFullYear() : 2099}-01-01`,
+    dataFimCartaz: dto.endDate ?? dto.dataFimCartaz ?? '2099-12-31',
+    poster: dto.poster ?? dto.posterUrl ?? '',
+    nota: dto.rating ?? (dto.media !== undefined ? dto.media * 2 : 0),
   };
 }
 

@@ -64,18 +64,21 @@ describe('filmeService', () => {
     expect(resultado.map((f) => f.idFilme)).toEqual([1]);
   });
 
-  it('filtra filmes em breve apenas dentro da janela de 7 dias', () => {
+  it('filtra filmes em breve com lancamento futuro', () => {
     const filmes: Filme[] = [
       filme({ idFilme: 1, titulo: 'Estreia Curta', dataLancamento: '2026-06-08' }),
       filme({ idFilme: 2, titulo: 'Estreia Longa', dataLancamento: '2026-06-12' }),
       filme({ idFilme: 3, titulo: 'Ja Lancou', dataLancamento: '2026-06-01' }),
     ];
 
-    const sessoes: Sessao[] = [sessao({ idSessao: 1, idFilme: 1, idCinema: 1 })];
+    const sessoes: Sessao[] = [
+      sessao({ idSessao: 1, idFilme: 1, idCinema: 1 }),
+      sessao({ idSessao: 2, idFilme: 2, idCinema: 1 }),
+    ];
 
     const resultado = filtrarFilmesEmBreve(filmes, sessoes, 'Todos', '', 1);
 
-    expect(resultado.map((f) => f.idFilme)).toEqual([1]);
+    expect(resultado.map((f) => f.idFilme)).toEqual([1, 2]);
   });
 
   it('retorna generos unicos mantendo Todos no inicio', () => {
