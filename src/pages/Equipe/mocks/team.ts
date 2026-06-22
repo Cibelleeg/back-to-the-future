@@ -18,6 +18,14 @@ export const TEAM_MEMBERS: TeamMember[] = [
     alt: 'Andressa, menina risonha que ri e que sonha',
   },
   {
+    name: 'Akemi',
+    role: 'Front-end & Banco',
+    bio: 'Uma ou duas linhas sobre o que essa pessoa construiu no projeto.',
+    github: 'https://github.com/akemiikemoto',
+    image: '/team/Akemi.png',
+    alt: 'Akemi, menina risonha que ri e que sonha',
+  },
+  {
     name: 'Cibelle',
     role: 'Front-end & Back-end',
     bio: 'Uma ou duas linhas sobre o que essa pessoa construiu no projeto.',
