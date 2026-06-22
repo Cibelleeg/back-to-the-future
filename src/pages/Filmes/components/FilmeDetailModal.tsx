@@ -16,7 +16,7 @@ interface FilmeDetailModalProps {
 
 export function FilmeDetailModal({ filme, onClose }: FilmeDetailModalProps) {
   const [extra, setExtra] = useState<CatalogoExtra>(() => getCatalogoExtra(filme.idFilme));
-  const [isLoadingExtra, setIsLoadingExtra] = useState(false);
+  const [isLoadingExtra, setIsLoadingExtra] = useState(!config.useMock);
   const [reviewError, setReviewError] = useState<string | null>(null);
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const estado = getEstado(filme);
@@ -24,12 +24,8 @@ export function FilmeDetailModal({ filme, onClose }: FilmeDetailModalProps) {
   const maxDist = Math.max(...Object.values(extra.dist), 1);
 
   useEffect(() => {
-    setExtra(getCatalogoExtra(filme.idFilme));
-    setReviewError(null);
-
     if (config.useMock) return;
 
-    setIsLoadingExtra(true);
     fetchFilmeDetalheAvaliacoes(filme.idFilme)
       .then(setExtra)
       .catch((error: unknown) => {
@@ -114,15 +110,15 @@ export function FilmeDetailModal({ filme, onClose }: FilmeDetailModalProps) {
       if (config.useMock) {
         setExtra((current) => {
           if (!current.myReview) return current;
-          const { myStars: _myStars, ...currentWithoutStars } = current;
           const dist = { ...current.dist };
           dist[current.myReview.nota as 1 | 2 | 3 | 4 | 5] = Math.max(0, dist[current.myReview.nota as 1 | 2 | 3 | 4 | 5] - 1);
 
           return {
-            ...currentWithoutStars,
+            ...current,
             count: Math.max(0, current.count - 1),
             dist,
             gate: 'eligible',
+            myStars: undefined,
             myReview: null,
             reviews: current.reviews.filter((review) => review.id !== current.myReview?.id),
           };

@@ -121,6 +121,7 @@ export function FilmesPage() {
 
       {selectedFilme && (
         <FilmeDetailModal
+          key={selectedFilme.idFilme}
           filme={selectedFilme}
           onClose={() => setSelectedId(null)}
         />
