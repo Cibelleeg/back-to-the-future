@@ -1,4 +1,5 @@
 import { REVIEWS, ELIGIBLE } from '../mockData';
+import { StarRating } from '../../../../components/ui';
 import * as S from '../ContaPage.styles';
 
 const FILM_ICON = (
@@ -7,18 +8,6 @@ const FILM_ICON = (
     <path d="M7 2v20M17 2v20M2 7h5M2 12h20M2 17h5M17 7h5M17 17h5" />
   </svg>
 );
-
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <S.Stars>
-      {Array.from({ length: 5 }, (_, i) => (
-        <svg key={i} viewBox="0 0 24 24" className={i < rating ? 'on' : 'off'}>
-          <path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-        </svg>
-      ))}
-    </S.Stars>
-  );
-}
 
 export function AvaliacoesPanel() {
   return (
@@ -34,7 +23,7 @@ export function AvaliacoesPanel() {
           <S.ReviewBody>
             <h3>{review.title}</h3>
             <S.ReviewRow>
-              <StarRating rating={review.rating} />
+              <StarRating rating={review.rating} maxRating={5} showScore={false} size={16} />
               <S.ReviewDate>{review.date}</S.ReviewDate>
             </S.ReviewRow>
             <p>{review.text}</p>
