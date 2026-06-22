@@ -10,7 +10,7 @@ interface Props {
 }
 
 export function ProdutoGrupoCard({ group }: Props) {
-  const { atualizar, items } = useCart();
+  const { atualizar, abrirCarrinho, items } = useCart();
   const [tamanho, setTamanho] = useState<string | null>(group.tamanhos[0] ?? null);
   const [tipo,    setTipo]    = useState<string | null>(group.tipos[0]    ?? null);
   const [pop, setPop] = useState(false);
@@ -89,6 +89,12 @@ export function ProdutoGrupoCard({ group }: Props) {
               <S.StepBtn onClick={() => fire(qty + 1)} aria-label="Adicionar mais">+</S.StepBtn>
             </S.AddStep>
           </S.AddWrapper>
+
+          {qty > 0 && (
+            <S.ConfirmCartButton type="button" onClick={abrirCarrinho}>
+              Conferir carrinho
+            </S.ConfirmCartButton>
+          )}
         </S.Footer>
       </S.Body>
     </S.Card>

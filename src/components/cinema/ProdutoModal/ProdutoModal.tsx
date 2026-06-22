@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Produto } from '../../../types/cinema';
 import { formataPreco } from '../../../utils/formatters';
+import { useCart } from '../../../contexts/useCart';
 import { ModalBackdrop, ButtonSecondary } from '../../../styles/shared';
 import * as S from './ProdutoModal.styles';
 
@@ -10,8 +11,15 @@ interface ProdutoModalProps {
 }
 
 export function ProdutoModal({ produto, onClose }: ProdutoModalProps) {
+  const { atualizar, items } = useCart();
   const [quantidade, setQuantidade] = useState(1);
   const [adicionado, setAdicionado] = useState(false);
+
+  const quantidadeAtual = items.find(item =>
+    item.idProduto === produto.idProduto
+    && (item.tamanho ?? null) === (produto.tamanho ?? null)
+    && (item.tipo ?? null) === (produto.tipo ?? null)
+  )?.quantidade ?? 0;
 
   function diminuirQuantidade() {
     setQuantidade((atual) => Math.max(1, atual - 1));
@@ -22,6 +30,7 @@ export function ProdutoModal({ produto, onClose }: ProdutoModalProps) {
   }
 
   function handleAdd() {
+    atualizar(produto, quantidadeAtual + quantidade);
     setAdicionado(true);
     window.setTimeout(() => setAdicionado(false), 1500);
   }

@@ -1,4 +1,5 @@
 import { ORDERS, type OrderStatus } from '../mockData';
+import { useCart } from '../../../../contexts/useCart';
 import * as S from '../ContaPage.styles';
 
 const FILM_ICON = (
@@ -15,6 +16,9 @@ const STATUS_LABEL: Record<OrderStatus, string> = {
 };
 
 export function PedidosPanel() {
+  const { userOrders } = useCart();
+  const orders = [...userOrders, ...ORDERS];
+
   return (
     <S.PanelWrap>
       <S.PanelHead>
@@ -22,7 +26,7 @@ export function PedidosPanel() {
         <p>Histórico de ingressos e itens da bomboniere. Apresente o código na entrada da sala.</p>
       </S.PanelHead>
 
-      {ORDERS.map(order => (
+      {orders.map(order => (
         <S.OrderCard key={order.id}>
           <S.OrderPoster>{FILM_ICON}</S.OrderPoster>
 

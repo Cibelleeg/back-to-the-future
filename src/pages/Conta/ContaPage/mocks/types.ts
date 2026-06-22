@@ -1,18 +1,7 @@
-export type OrderStatus = 'confirmado' | 'utilizado' | 'cancelado';
+import type { OrderStatus, UserOrder } from '../../../../types/order';
 
-export interface MockOrder {
-  id: string;
-  title: string;
-  cinema: string;
-  date: string;
-  room: string;
-  seats: string[];
-  extras?: string;
-  status: OrderStatus;
-  total: string;
-  totalNote: string;
-  code: string;
-}
+export type { OrderStatus };
+export type MockOrder = UserOrder;
 
 export interface MockReview {
   id: string;

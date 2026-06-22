@@ -57,7 +57,7 @@ export function FilmeModal({ filme, sessoes, onClose, onBuy }: FilmeModalProps) 
             disabled={!sessaoSelecionada}
             onClick={() => sessaoSelecionada && onBuy(filme, sessaoSelecionada)}
           >
-            {sessaoSelecionada ? `Comprar — ${formataPreco(sessaoSelecionada.precoBase)}` : 'Selecione uma sessão'}
+            {sessaoSelecionada ? `Adicionar ao carrinho — ${formataPreco(sessaoSelecionada.precoBase)}` : 'Selecione uma sessão'}
           </ButtonPrimary>
         </S.Footer>
       </S.Modal>

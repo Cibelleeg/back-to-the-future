@@ -30,7 +30,7 @@ export function EquipePage() {
           <S.Eyebrow>Créditos finais</S.Eyebrow>
           <S.Title>A equipe por trás da tela.</S.Title>
           <S.Lede>
-            Três estudantes da UNIFESP construíram o CINEFESP, e cada um deixou uma marca no projeto (literalmente).
+            Quatro estudantes da UNIFESP construíram o CINEFESP, e cada um deixou uma marca no projeto (literalmente).
             As pixações em verde são nossa assinatura.
           </S.Lede>
         </S.Hero>

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import type { Cinema } from '../../../types/cinema';
 import { useCart } from '../../../contexts/useCart';
 import { useAuth, useUserInfo } from '../../../hooks';
+import { CartDrawer } from '../CartDrawer';
 import { CinemaSelector } from '../CinemaSelector';
 import * as S from './Navbar.styles';
 
@@ -26,7 +27,7 @@ export function Navbar({ search, onSearchChange, cinemas, cinemaSelecionado, onC
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { count } = useCart();
+  const { count, cartOpen, abrirCarrinho, fecharCarrinho } = useCart();
   const { pathname } = useLocation();
   const { isLoggedIn, logout } = useAuth();
   const userInfo = useUserInfo();
@@ -90,7 +91,7 @@ export function Navbar({ search, onSearchChange, cinemas, cinemaSelecionado, onC
       )}
 
       <S.Auth>
-        <S.CartBtn>
+        <S.CartBtn onClick={abrirCarrinho} aria-label={`Abrir carrinho com ${count} ${count === 1 ? 'item' : 'itens'}`}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
             <path d="M3 6h18M16 10a4 4 0 0 1-8 0" />
@@ -137,6 +138,8 @@ export function Navbar({ search, onSearchChange, cinemas, cinemaSelecionado, onC
           </svg>
         </S.Burger>
       </S.Auth>
+
+      <CartDrawer open={cartOpen} onClose={fecharCarrinho} />
     </S.Nav>
   );
 }

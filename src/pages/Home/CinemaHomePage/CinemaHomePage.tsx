@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import type { Filme, Sessao } from '../../../types/cinema';
-import { formataHora, formataPreco } from '../../../utils/formatters';
 import { useCinema, useFilmes, useSessoes } from '../../../hooks';
 import { FilmeModal, Hero, MobileMenu, Navbar, SecaoEmBreve, SecaoEmCartaz } from '../../../components/cinema';
+import { useCart } from '../../../contexts/useCart';
 import * as S from './CinemaHomePage.styles';
 
 export function CinemaHomePage() {
@@ -10,13 +10,17 @@ export function CinemaHomePage() {
   const [menuAberto, setMenuAberto] = useState(false);
 
   const { cinemas, cinemaSelecionado, setCinemaSelecionado } = useCinema();
+  const { abrirCarrinho, vincularSessao } = useCart();
   const idCinema = cinemaSelecionado?.idCinema;
 
   const { sessoes, sessoesPorFilme, error: sessoesError } = useSessoes(idCinema);
   const { filmeDestaque, filmesEmCartaz, filmesEmBreve, generos, generoSelecionado, setGeneroSelecionado, busca, setBusca, error } = useFilmes(idCinema, sessoes);
 
   function handleBuy(filme: Filme, sessao: Sessao) {
-    alert(`Redirecionando para compra:\n${filme.titulo}\n${formataHora(sessao.dataHora)} · ${sessao.formato} · ${formataPreco(sessao.precoBase)}`);
+    const cinemaDaSessao = cinemas.find(cinema => cinema.idCinema === sessao.idCinema);
+    vincularSessao(sessao, filme.titulo, cinemaDaSessao?.nome ?? cinemaSelecionado?.nome);
+    setFilmeSelecionado(null);
+    abrirCarrinho();
   }
 
   const pageError = error ?? sessoesError;

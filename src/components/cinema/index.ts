@@ -1,4 +1,5 @@
 export { CinemaSelector } from './CinemaSelector';
+export { CartDrawer } from './CartDrawer';
 export { FilmeCard } from './FilmeCard';
 export { FilmeCardBreve } from './FilmeCardBreve';
 export { FilmeModal } from './FilmeModal';

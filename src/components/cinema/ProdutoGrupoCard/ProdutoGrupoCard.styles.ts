@@ -213,3 +213,22 @@ export const QtyCount = styled.span<{ $pop: boolean }>`
   text-align: center;
   animation: ${({ $pop }) => ($pop ? pop : 'none')} 0.15s ease;
 `;
+
+export const ConfirmCartButton = styled.button`
+  width: 100%;
+  min-height: 34px;
+  border-radius: 9px;
+  border: 1px solid var(--border-glass);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  transition: background 0.16s, border-color 0.16s, transform 0.16s;
+
+  &:hover {
+    background: var(--surface-hover);
+    border-color: var(--primary-border);
+    transform: translateY(-1px);
+  }
+`;

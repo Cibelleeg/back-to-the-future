@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../../hooks';
+import { useCart } from '../../../contexts/useCart';
 import { Navbar } from '../../../components/cinema';
 import { ORDERS, REVIEWS } from './mockData';
 import { DadosPanel } from './panels/DadosPanel';
@@ -10,42 +11,46 @@ import * as S from './ContaPage.styles';
 
 type Tab = 'dados' | 'pedidos' | 'avaliacoes';
 
-const NAV: { id: Tab; label: string; count?: number; icon: React.ReactNode }[] = [
-  {
-    id: 'dados',
-    label: 'Meus dados',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" />
-      </svg>
-    ),
-  },
-  {
-    id: 'pedidos',
-    label: 'Meus pedidos',
-    count: ORDERS.length,
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M2 9V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4Z" />
-        <path d="M13 5v14" />
-      </svg>
-    ),
-  },
-  {
-    id: 'avaliacoes',
-    label: 'Minhas avaliações',
-    count: REVIEWS.length,
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-      </svg>
-    ),
-  },
-];
+function buildNav(ordersCount: number): { id: Tab; label: string; count?: number; icon: React.ReactNode }[] {
+  return [
+    {
+      id: 'dados',
+      label: 'Meus dados',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" />
+        </svg>
+      ),
+    },
+    {
+      id: 'pedidos',
+      label: 'Meus pedidos',
+      count: ordersCount,
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2 9V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4Z" />
+          <path d="M13 5v14" />
+        </svg>
+      ),
+    },
+    {
+      id: 'avaliacoes',
+      label: 'Minhas avaliações',
+      count: REVIEWS.length,
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+        </svg>
+      ),
+    },
+  ];
+}
 
 export function ContaPage() {
   const { isLoggedIn, logout } = useAuth();
+  const { userOrders } = useCart();
   const [tab, setTab] = useState<Tab>('dados');
+  const nav = buildNav(ORDERS.length + userOrders.length);
 
   if (!isLoggedIn) return <Navigate to="/login#entrar" replace />;
 
@@ -57,7 +62,7 @@ export function ContaPage() {
         <S.Side>
           <S.SideTitle>Minha conta</S.SideTitle>
 
-          {NAV.map(item => (
+          {nav.map(item => (
             <S.NavBtn key={item.id} $active={tab === item.id} onClick={() => setTab(item.id)}>
               {item.icon}
               {item.label}
