@@ -37,6 +37,11 @@ export const Nav = styled.nav<{ $scrolled?: boolean }>`
   > *:nth-child(4) { animation-delay: .14s; }
   > *:nth-child(5) { animation-delay: .18s; }
   > *:nth-child(6) { animation-delay: .22s; }
+
+  @media (max-width: 560px) {
+    gap: 14px;
+    padding: 16px;
+  }
 `;
 
 export const Logo = styled.a`
@@ -150,6 +155,7 @@ export const Auth = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 `;
 
 export const CartBtn = styled.button`
@@ -219,6 +225,8 @@ export const BtnSolid = styled.button`
 
   &:hover { box-shadow: 0 10px 26px -6px var(--primary-shadow-hover); transform: translateY(-1px); }
   &:active { transform: translateY(1px); }
+
+  @media (max-width: 560px) { display: none; }
 `;
 
 export const Burger = styled.button`

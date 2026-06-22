@@ -1,14 +1,17 @@
 import styled from 'styled-components';
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ $variant?: 'navbar' | 'menu' }>`
   position: relative;
+  width: ${({ $variant }) => ($variant === 'menu' ? '100%' : 'auto')};
 `;
 
-export const Trigger = styled.button`
+export const Trigger = styled.button<{ $variant?: 'navbar' | 'menu' }>`
   font-family: inherit;
   display: flex;
   align-items: center;
+  justify-content: ${({ $variant }) => ($variant === 'menu' ? 'space-between' : 'flex-start')};
   gap: 9px;
+  width: ${({ $variant }) => ($variant === 'menu' ? '100%' : 'auto')};
   background: var(--surface);
   border: 1px solid var(--border-glass);
   color: var(--text-primary);
@@ -35,18 +38,22 @@ export const Trigger = styled.button`
 
   &:hover .chev { transform: translateY(2px); }
 
-  @media (max-width: 1080px) { display: none; }
+  @media (max-width: 1080px) {
+    display: ${({ $variant }) => ($variant === 'menu' ? 'flex' : 'none')};
+  }
 `;
 
-export const Dropdown = styled.div`
-  position: absolute;
-  top: calc(100% + 8px);
+export const Dropdown = styled.div<{ $variant?: 'navbar' | 'menu' }>`
+  position: ${({ $variant }) => ($variant === 'menu' ? 'static' : 'absolute')};
+  top: ${({ $variant }) => ($variant === 'menu' ? 'auto' : 'calc(100% + 8px)')};
   left: 0;
+  margin-top: ${({ $variant }) => ($variant === 'menu' ? '8px' : '0')};
   background: var(--bg-card);
   border: 1px solid var(--border-primary);
   border-radius: 12px;
   padding: 6px;
   min-width: 220px;
+  width: ${({ $variant }) => ($variant === 'menu' ? '100%' : 'auto')};
   z-index: 100;
   box-shadow: 0 8px 32px var(--shadow-dropdown);
 `;

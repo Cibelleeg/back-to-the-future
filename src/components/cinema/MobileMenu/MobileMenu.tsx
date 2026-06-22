@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import type { Cinema } from '../../../types/cinema';
 import { CinemaSelector } from '../CinemaSelector';
@@ -23,6 +23,7 @@ const LINKS = [
 
 export function MobileMenu({ aberto, onFechar, search, onSearchChange, cinemas, cinemaSelecionado, onCinemaChange }: MobileMenuProps) {
   const { pathname } = useLocation();
+  const previousPath = useRef(pathname);
 
   useEffect(() => {
     if (!aberto) return;
@@ -41,7 +42,11 @@ export function MobileMenu({ aberto, onFechar, search, onSearchChange, cinemas, 
   }, [aberto]);
 
   useEffect(() => {
-    if (aberto) onFechar();
+    if (aberto && previousPath.current !== pathname) {
+      onFechar();
+    }
+
+    previousPath.current = pathname;
   }, [pathname, aberto, onFechar]);
 
   if (!aberto) return null;
@@ -77,7 +82,12 @@ export function MobileMenu({ aberto, onFechar, search, onSearchChange, cinemas, 
 
         <S.Divider />
 
-        <CinemaSelector cinemas={cinemas} cinemaSelecionado={cinemaSelecionado} onChange={(c) => { onCinemaChange(c); onFechar(); }} />
+        <CinemaSelector
+          cinemas={cinemas}
+          cinemaSelecionado={cinemaSelecionado}
+          onChange={(c) => { onCinemaChange(c); onFechar(); }}
+          variant="menu"
+        />
       </S.Drawer>
     </S.Backdrop>
   );

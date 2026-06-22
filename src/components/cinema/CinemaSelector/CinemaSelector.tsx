@@ -6,9 +6,10 @@ interface CinemaSelectorProps {
   cinemas: Cinema[];
   cinemaSelecionado: Cinema | null;
   onChange: (cinema: Cinema | null) => void;
+  variant?: 'navbar' | 'menu';
 }
 
-export function CinemaSelector({ cinemas, cinemaSelecionado, onChange }: CinemaSelectorProps) {
+export function CinemaSelector({ cinemas, cinemaSelecionado, onChange, variant = 'navbar' }: CinemaSelectorProps) {
   const [aberto, setAberto] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -26,8 +27,8 @@ export function CinemaSelector({ cinemas, cinemaSelecionado, onChange }: CinemaS
   }
 
   return (
-    <S.Wrapper ref={ref}>
-      <S.Trigger onClick={() => setAberto(!aberto)}>
+    <S.Wrapper ref={ref} $variant={variant}>
+      <S.Trigger onClick={() => setAberto(!aberto)} $variant={variant}>
         <svg className="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z" />
           <circle cx="12" cy="10" r="2.4" />
@@ -39,7 +40,7 @@ export function CinemaSelector({ cinemas, cinemaSelecionado, onChange }: CinemaS
       </S.Trigger>
 
       {aberto && (
-        <S.Dropdown>
+        <S.Dropdown $variant={variant}>
           <S.Option $active={!cinemaSelecionado} onClick={() => selecionar(null)}>
             Todos os cinemas
           </S.Option>
