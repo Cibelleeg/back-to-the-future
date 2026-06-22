@@ -160,9 +160,66 @@ export const Chip = styled.button<{ $active: boolean }>`
   }
 `;
 
+export const Section = styled.section`
+  margin-bottom: 48px;
+`;
+
+export const SectionHeader = styled.div`
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+`;
+
+export const SectionTitle = styled.h2`
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin: 0;
+`;
+
+export const SectionCount = styled.span`
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+`;
+
+export const MenuGroups = styled.div`
+  display: grid;
+  gap: 32px;
+`;
+
+export const MenuGroup = styled.div`
+  display: grid;
+  gap: 14px;
+`;
+
+export const SubSectionHeader = styled.div`
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+`;
+
+export const SubSectionTitle = styled.h3`
+  margin: 0;
+  color: rgba(255,255,255,0.82);
+  font-size: 15px;
+  font-weight: 700;
+`;
+
 export const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+`;
+
+export const ComboGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 16px;
 `;
 

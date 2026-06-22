@@ -1,6 +1,6 @@
 import type { Cinema, Filme, Produto, Sessao } from '../types/cinema';
-import { mapCinemaDTO, mapFilmeDTO, mapProdutoDTO, mapSessaoDTO } from './mappers';
-import type { CinemaDTO, FilmeDTO, ProdutoDTO, SessaoDTO } from './mappers';
+import { mapCinemaDTO, mapComboDTO, mapFilmeDTO, mapProdutoDTO, mapSessaoDTO } from './mappers';
+import type { CinemaDTO, ComboDTO, FilmeDTO, ProdutoDTO, SessaoDTO } from './mappers';
 import { config } from '../config';
 
 const BASE_URL = config.apiUrl;
@@ -151,4 +151,5 @@ function apiFetch<T>(path: string): Promise<T> {
 export const fetchFilmes   = (): Promise<Filme[]>   => apiFetch<PaginatedResponse<FilmeDTO>>('/filmes').then((page) => page.data.map(mapFilmeDTO));
 export const fetchCinemas  = (): Promise<Cinema[]>  => apiFetch<CinemaDTO[]>('/cinemas').then((dtos) => dtos.map(mapCinemaDTO));
 export const fetchProdutos = (): Promise<Produto[]> => apiFetch<ProdutoDTO[]>('/products').then((dtos) => dtos.map(mapProdutoDTO));
+export const fetchCombos   = (): Promise<Produto[]> => apiFetch<ComboDTO[]>('/combos').then((dtos) => dtos.map(mapComboDTO));
 export const fetchSessoes  = (): Promise<Sessao[]>  => apiFetch<SessaoDTO[]>('/sessions').then((dtos) => dtos.map(mapSessaoDTO));

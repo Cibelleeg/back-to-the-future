@@ -1,20 +1,45 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import type { Produto } from '../../types/cinema';
 import { formataData, formataHora } from '../../utils/formatters';
 import { useCinema, useProdutos } from '../../hooks';
-import { Navbar, MobileMenu, ProdutoCard, ProdutoModal } from '../../components/cinema';
+import { Navbar, MobileMenu } from '../../components/cinema';
+import { ProdutoGrupoCard } from '../../components/cinema/ProdutoGrupoCard';
 import { useCart } from '../../contexts/useCart';
+import { groupProdutos } from './groupProducts';
 import * as S from './BombonierePage.styles';
 
 export function BombonierePage() {
-  const [produtoSelecionado, setProdutoSelecionado] = useState<Produto | null>(null);
   const [menuAberto, setMenuAberto] = useState(false);
 
   const { cinemas, cinemaSelecionado, setCinemaSelecionado } = useCinema();
   const idCinema = cinemaSelecionado?.idCinema;
-  const { produtosFiltrados, categorias, categoriaSelecionada, setCategoriaSelecionada } = useProdutos(idCinema);
+  const { allProdutos, produtosFiltrados, categorias, categoriaSelecionada, setCategoriaSelecionada } = useProdutos(idCinema);
   const { sessaoVinculada, desvincularSessao } = useCart();
+
+  const gruposCombos = useMemo(
+    () => groupProdutos(allProdutos.filter(p => p.categoria === 'Combo')),
+    [allProdutos],
+  );
+
+  const gruposCardapio = useMemo(
+    () => groupProdutos(produtosFiltrados.filter(p => p.categoria !== 'Combo')),
+    [produtosFiltrados],
+  );
+
+  const gruposComSeletores = useMemo(
+    () => gruposCardapio.filter(group => group.tamanhos.length > 1 || group.tipos.length > 1),
+    [gruposCardapio],
+  );
+
+  const gruposSemSeletores = useMemo(
+    () => gruposCardapio.filter(group => group.tamanhos.length <= 1 && group.tipos.length <= 1),
+    [gruposCardapio],
+  );
+
+  const categoriasFiltro = useMemo(
+    () => categorias.filter(c => c !== 'Combo'),
+    [categorias],
+  );
 
   return (
     <S.Main>
@@ -36,7 +61,7 @@ export function BombonierePage() {
       <S.Content>
         <S.PageHeader>
           <h1>Bomboniere</h1>
-          <p>Adicione itens ao seu pedido antes de finalizar a compra do ingresso.</p>
+          <p>Adicione itens ao seu pedido antes de finalizar a compra do ingresso e troque por seus produtos na bomboniere do cinema!</p>
         </S.PageHeader>
 
         {sessaoVinculada ? (
@@ -66,32 +91,75 @@ export function BombonierePage() {
           </S.SessaoBanner>
         )}
 
-        <S.Chips>
-          {categorias.map(cat => (
-            <S.Chip key={cat} $active={categoriaSelecionada === cat} onClick={() => setCategoriaSelecionada(cat)}>
-              {cat}
-            </S.Chip>
-          ))}
-        </S.Chips>
+        {/* ── Cardápio ── */}
+        <S.Section>
+          <S.SectionHeader>
+            <S.SectionTitle>Cardápio</S.SectionTitle>
+            <S.SectionCount>{gruposCardapio.length} itens</S.SectionCount>
+          </S.SectionHeader>
 
-        {produtosFiltrados.length === 0 ? (
-          <S.Empty>
-            {cinemaSelecionado
-              ? 'Nenhum produto disponível para este cinema.'
-              : 'Selecione um cinema para ver o cardápio.'}
-          </S.Empty>
-        ) : (
-          <S.Grid>
-            {produtosFiltrados.map(produto => (
-              <ProdutoCard key={produto.idProduto} produto={produto} onClick={() => setProdutoSelecionado(produto)} />
+          <S.Chips>
+            {categoriasFiltro.map(cat => (
+              <S.Chip key={cat} $active={categoriaSelecionada === cat} onClick={() => setCategoriaSelecionada(cat)}>
+                {cat}
+              </S.Chip>
             ))}
-          </S.Grid>
+          </S.Chips>
+
+          {gruposCardapio.length === 0 ? (
+            <S.Empty>
+              {cinemaSelecionado
+                ? 'Nenhum produto disponível para este cinema.'
+                : 'Selecione um cinema para ver o cardápio.'}
+            </S.Empty>
+          ) : (
+            <S.MenuGroups>
+              {gruposComSeletores.length > 0 && (
+                <S.MenuGroup>
+                  <S.SubSectionHeader>
+                    <S.SubSectionTitle>Personalizáveis</S.SubSectionTitle>
+                    <S.SectionCount>{gruposComSeletores.length} itens</S.SectionCount>
+                  </S.SubSectionHeader>
+                  <S.Grid>
+                    {gruposComSeletores.map(group => (
+                      <ProdutoGrupoCard key={group.nome} group={group} />
+                    ))}
+                  </S.Grid>
+                </S.MenuGroup>
+              )}
+
+              {gruposSemSeletores.length > 0 && (
+                <S.MenuGroup>
+                  <S.SubSectionHeader>
+                    <S.SubSectionTitle>Sem variações</S.SubSectionTitle>
+                    <S.SectionCount>{gruposSemSeletores.length} itens</S.SectionCount>
+                  </S.SubSectionHeader>
+                  <S.Grid>
+                    {gruposSemSeletores.map(group => (
+                      <ProdutoGrupoCard key={group.nome} group={group} />
+                    ))}
+                  </S.Grid>
+                </S.MenuGroup>
+              )}
+            </S.MenuGroups>
+          )}
+        </S.Section>
+
+        {/* ── Combos ── */}
+        {gruposCombos.length > 0 && (
+          <S.Section>
+            <S.SectionHeader>
+              <S.SectionTitle>Combos</S.SectionTitle>
+              <S.SectionCount>{gruposCombos.length} opções</S.SectionCount>
+            </S.SectionHeader>
+            <S.ComboGrid>
+              {gruposCombos.map(group => (
+                <ProdutoGrupoCard key={group.nome} group={group} />
+              ))}
+            </S.ComboGrid>
+          </S.Section>
         )}
       </S.Content>
-
-      {produtoSelecionado && (
-        <ProdutoModal produto={produtoSelecionado} onClose={() => setProdutoSelecionado(null)} />
-      )}
     </S.Main>
   );
 }

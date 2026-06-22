@@ -1,0 +1,1 @@
+export { ProdutoGrupoCard } from './ProdutoGrupoCard';

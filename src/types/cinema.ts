@@ -1,6 +1,7 @@
 export type FilmeId   = number & { readonly __brand: 'FilmeId' };
 export type SessaoId  = number & { readonly __brand: 'SessaoId' };
 export type ProdutoId = number & { readonly __brand: 'ProdutoId' };
+export type ComboId   = number & { readonly __brand: 'ComboId' };
 export type CinemaId  = number & { readonly __brand: 'CinemaId' };
 
 export type Classificacao = 'L' | '10' | '12' | '14' | '16' | '18';
@@ -44,19 +45,27 @@ export interface Sessao {
 
 export interface Produto {
   idProduto: ProdutoId;
+  idCombo?: ComboId;
   idCinema: CinemaId;
   nome: string;
   descricao: string;
   preco: number;
   estoque: number;
   categoria: string;
-  poster: string;
+  poster?: string;
+  tamanho?: string | null;
+  tipo?: string | null;
+  tamanhos?: string[];
+  sabores?: string[];
 }
 
 export interface CartItem {
   idProduto: ProdutoId;
+  idCombo?: ComboId;
   idCinema: CinemaId;
   nome: string;
   preco: number;
+  tamanho?: string | null;
+  tipo?: string | null;
   quantidade: number;
 }

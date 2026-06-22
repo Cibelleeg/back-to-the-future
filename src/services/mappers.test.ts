@@ -100,7 +100,7 @@ describe('mapCinemaDTO', () => {
 });
 
 describe('mapProdutoDTO', () => {
-  it('mapeia campos e define img vazio quando ausente', () => {
+  it('mapeia campos e define poster vazio quando ausente', () => {
     const dto: ProdutoDTO = {
       id: 3,
       name: 'Pipoca',
@@ -114,5 +114,7 @@ describe('mapProdutoDTO', () => {
     expect(result.preco).toBe(18.9);
     expect(result.idProduto).toBe(3);
     expect(result.poster).toBe('');
+    expect(result.tamanho).toBeNull();
+    expect(result.tipo).toBeNull();
   });
 });

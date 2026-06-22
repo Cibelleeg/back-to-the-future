@@ -2,6 +2,7 @@ import type {
   Cinema,
   CinemaId,
   Classificacao,
+  ComboId,
   Filme,
   FilmeId,
   Formato,
@@ -60,6 +61,24 @@ export interface ProdutoDTO {
   stock: number;
   category: string;
   poster?: string;
+  img?: string;
+  tamanho?: string | null;
+  tipo?: string | null;
+  tamanhos?: string[];
+  sabores?: string[];
+}
+
+export interface ComboDTO {
+  id?: number;
+  idCombo?: number;
+  nome?: string;
+  name?: string;
+  descricao?: string;
+  description?: string;
+  preco?: number;
+  price?: number;
+  ativo?: boolean;
+  poster?: string | null;
 }
 
 export interface SessaoDTO {
@@ -124,7 +143,40 @@ export function mapProdutoDTO(dto: ProdutoDTO): Produto {
     preco: dto.price,
     estoque: dto.stock,
     categoria: dto.category,
-    poster: dto.poster ?? '',
+    poster: dto.poster ?? dto.img ?? '',
+    tamanho: dto.tamanho ?? null,
+    tipo: dto.tipo ?? null,
+    tamanhos: dto.tamanhos ?? [],
+    sabores: dto.sabores ?? [],
+  };
+}
+
+const COMBO_POSTERS: Record<string, string> = {
+  'Combo Classico': 'https://images.unsplash.com/photo-1585647347384-2593bc35786b?auto=format&fit=crop&w=1000&q=80',
+  'Combo Casal':    'https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=1000&q=80',
+  'Combo Premium':  'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1000&q=80',
+};
+
+const DEFAULT_COMBO_POSTER = 'https://images.unsplash.com/photo-1536599018102-9f803c140fc1?auto=format&fit=crop&w=1000&q=80';
+
+export function mapComboDTO(dto: ComboDTO): Produto {
+  const id   = dto.id ?? dto.idCombo ?? 0;
+  const nome = dto.nome ?? dto.name ?? '';
+
+  return {
+    idProduto: -id as ProdutoId,
+    idCombo: id as ComboId,
+    idCinema: 0 as CinemaId,
+    nome,
+    descricao: dto.descricao ?? dto.description ?? '',
+    preco: dto.preco ?? dto.price ?? 0,
+    estoque: 999,
+    categoria: 'Combo',
+    poster: dto.poster ?? COMBO_POSTERS[nome] ?? DEFAULT_COMBO_POSTER,
+    tamanho: null,
+    tipo: null,
+    tamanhos: [],
+    sabores: [],
   };
 }
 

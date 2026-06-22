@@ -7,15 +7,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [sessaoVinculada, setSessaoVinculada] = useState<SessaoVinculada | null>(null);
 
   function atualizar(produto: Produto, quantidade: number) {
+    const sameItem = (item: CartItem) =>
+      item.idProduto === produto.idProduto
+      && (item.tamanho ?? null) === (produto.tamanho ?? null)
+      && (item.tipo ?? null) === (produto.tipo ?? null);
+
     setItems(prev => {
-      if (quantidade === 0) return prev.filter(i => i.idProduto !== produto.idProduto);
-      const existente = prev.find(i => i.idProduto === produto.idProduto);
-      if (existente) return prev.map(i => i.idProduto === produto.idProduto ? { ...i, quantidade } : i);
+      if (quantidade === 0) return prev.filter(i => !sameItem(i));
+      const existente = prev.find(sameItem);
+      if (existente) return prev.map(i => sameItem(i) ? { ...i, quantidade } : i);
       return [...prev, {
         idProduto: produto.idProduto,
+        idCombo:   produto.idCombo,
         idCinema:  produto.idCinema,
         nome:      produto.nome,
         preco:     produto.preco,
+        tamanho:   produto.tamanho ?? null,
+        tipo:      produto.tipo ?? null,
         quantidade,
       }];
     });

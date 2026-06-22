@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Produto } from '../types/cinema';
 import { PRODUTOS } from '../data/mock';
-import { fetchProdutos } from '../services/api';
+import { fetchCombos, fetchProdutos } from '../services/api';
 import { extrairCategorias, filtrarProdutos } from '../services/produtoService';
 import { config } from '../config';
 
@@ -14,8 +14,8 @@ export function useProdutos(idCinema?: number) {
   useEffect(() => {
     if (config.useMock) return;
 
-    fetchProdutos()
-      .then(setAllProdutos)
+    Promise.all([fetchProdutos(), fetchCombos()])
+      .then(([produtos, combos]) => setAllProdutos([...produtos, ...combos]))
       .catch((err: unknown) => {
         setError(err instanceof Error ? err.message : 'Erro ao carregar produtos.');
       })
@@ -32,5 +32,5 @@ export function useProdutos(idCinema?: number) {
     [allProdutos, categoriaSelecionada, idCinema],
   );
 
-  return { produtosFiltrados, categorias, categoriaSelecionada, setCategoriaSelecionada, isLoading, error };
+  return { allProdutos, produtosFiltrados, categorias, categoriaSelecionada, setCategoriaSelecionada, isLoading, error };
 }
