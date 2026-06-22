@@ -651,6 +651,7 @@ export const Gate = styled.div<{ $variant: 'eligible' | 'locked' | 'reviewed' }>
   display: flex;
   align-items: center;
   gap: 14px;
+  flex-wrap: wrap;
 
   ${({ $variant }) => {
     if ($variant === 'eligible')
@@ -690,6 +691,60 @@ export const MyStars = styled.div`
   gap: 2px;
   margin-top: 3px;
   svg { width: 13px; height: 13px; }
+`;
+
+export const ReviewForm = styled.form`
+  width: 100%;
+  margin-top: 4px;
+  display: grid;
+  gap: 10px;
+`;
+
+export const StarsInput = styled.div`
+  display: inline-flex;
+  gap: 3px;
+`;
+
+export const StarInputButton = styled.button<{ $active: boolean }>`
+  border: none;
+  background: transparent;
+  color: ${({ $active }) => $active ? 'var(--rating)' : 'rgba(114,125,131,0.45)'};
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 1px;
+`;
+
+export const ReviewTextarea = styled.textarea`
+  min-height: 82px;
+  resize: vertical;
+  border-radius: 10px;
+  border: 1px solid ${LINE};
+  background: rgba(12,19,16,0.58);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.45;
+  padding: 10px 12px;
+
+  &::placeholder { color: var(--text-muted); }
+  &:focus {
+    outline: none;
+    border-color: rgba(31,158,87,0.45);
+    box-shadow: 0 0 0 3px rgba(31,158,87,0.12);
+  }
+`;
+
+export const FormActions = styled.div`
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+`;
+
+export const InlineError = styled.p`
+  color: #ff9f9f;
+  font-size: 12px;
 `;
 
 

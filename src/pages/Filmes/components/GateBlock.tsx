@@ -1,14 +1,80 @@
+import { useState, type FormEvent } from 'react';
 import { StarRating } from '../../../components/ui';
-import type { Gate } from '../catalogoData';
+import type { Gate, MinhaAvaliacao } from '../catalogoData';
 import * as S from '../FilmesPage.styles';
 
 interface GateBlockProps {
   gate: Gate;
   myStars?: number;
+  myReview?: MinhaAvaliacao | null;
   upcoming?: boolean;
+  isSubmitting?: boolean;
+  error?: string | null;
+  onSubmitReview: (nota: number, comentario: string) => Promise<void> | void;
+  onDeleteReview?: () => Promise<void> | void;
 }
 
-export function GateBlock({ gate, myStars, upcoming }: GateBlockProps) {
+export function GateBlock({
+  gate,
+  myStars,
+  myReview,
+  upcoming,
+  isSubmitting = false,
+  error,
+  onSubmitReview,
+  onDeleteReview,
+}: GateBlockProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [nota, setNota] = useState(myStars ?? 5);
+  const [comentario, setComentario] = useState(myReview?.comentario ?? '');
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    try {
+      await onSubmitReview(nota, comentario.trim());
+      setIsEditing(false);
+    } catch {
+      // A mensagem de erro vem do modal e mantém o formulário aberto.
+    }
+  }
+
+  function reviewForm() {
+    return (
+      <S.ReviewForm onSubmit={handleSubmit}>
+        <S.StarsInput aria-label="Nota da avaliação">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <S.StarInputButton
+              key={star}
+              type="button"
+              $active={star <= nota}
+              onClick={() => setNota(star)}
+              aria-label={`${star} estrela${star > 1 ? 's' : ''}`}
+            >
+              ★
+            </S.StarInputButton>
+          ))}
+        </S.StarsInput>
+        <S.ReviewTextarea
+          value={comentario}
+          onChange={(event) => setComentario(event.target.value)}
+          placeholder="Escreva um comentário opcional"
+          maxLength={600}
+        />
+        {error && <S.InlineError>{error}</S.InlineError>}
+        <S.FormActions>
+          <S.BtnPrimary type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Salvando...' : 'Salvar avaliação'}
+          </S.BtnPrimary>
+          {gate === 'reviewed' && (
+            <S.BtnGhost type="button" onClick={() => setIsEditing(false)} disabled={isSubmitting}>
+              Cancelar
+            </S.BtnGhost>
+          )}
+        </S.FormActions>
+      </S.ReviewForm>
+    );
+  }
+
   if (gate === 'eligible') {
     return (
       <S.Gate $variant="eligible">
@@ -21,7 +87,9 @@ export function GateBlock({ gate, myStars, upcoming }: GateBlockProps) {
           <strong>Você assistiu a este filme</strong>
           <small>Conte o que achou — sua avaliação ajuda a comunidade.</small>
         </S.GateText>
-        <S.BtnPrimary>Avaliar</S.BtnPrimary>
+        {isEditing ? reviewForm() : (
+          <S.BtnPrimary onClick={() => setIsEditing(true)}>Avaliar</S.BtnPrimary>
+        )}
       </S.Gate>
     );
   }
@@ -40,7 +108,16 @@ export function GateBlock({ gate, myStars, upcoming }: GateBlockProps) {
             <StarRating rating={myStars} maxRating={5} showScore={false} size={13} />
           </S.MyStars>
         </S.GateText>
-        <S.BtnGhost>Editar avaliação</S.BtnGhost>
+        {isEditing ? reviewForm() : (
+          <S.FormActions>
+            <S.BtnGhost onClick={() => setIsEditing(true)}>Editar avaliação</S.BtnGhost>
+            {onDeleteReview && (
+              <S.BtnGhost type="button" onClick={onDeleteReview} disabled={isSubmitting}>
+                Excluir
+              </S.BtnGhost>
+            )}
+          </S.FormActions>
+        )}
       </S.Gate>
     );
   }

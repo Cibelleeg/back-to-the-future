@@ -1,6 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { StarRating } from '../../../components/ui';
-import { getCatalogoExtra } from '../catalogoData';
+import { config } from '../../../config';
+import { atualizarAvaliacao, criarAvaliacaoFilme, excluirAvaliacao, fetchFilmeDetalheAvaliacoes } from '../../../services/avaliacaoService';
+import { getCatalogoExtra, type CatalogoExtra, type Review } from '../catalogoData';
 import { ESTADO_LABEL, getEstado, score5 } from '../filmesUtils';
 import type { FilmeComRank } from '../types';
 import * as S from '../FilmesPage.styles';
@@ -13,10 +15,129 @@ interface FilmeDetailModalProps {
 }
 
 export function FilmeDetailModal({ filme, onClose }: FilmeDetailModalProps) {
-  const extra = getCatalogoExtra(filme.idFilme);
+  const [extra, setExtra] = useState<CatalogoExtra>(() => getCatalogoExtra(filme.idFilme));
+  const [isLoadingExtra, setIsLoadingExtra] = useState(false);
+  const [reviewError, setReviewError] = useState<string | null>(null);
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const estado = getEstado(filme);
   const score = score5(filme.nota);
   const maxDist = Math.max(...Object.values(extra.dist), 1);
+
+  useEffect(() => {
+    setExtra(getCatalogoExtra(filme.idFilme));
+    setReviewError(null);
+
+    if (config.useMock) return;
+
+    setIsLoadingExtra(true);
+    fetchFilmeDetalheAvaliacoes(filme.idFilme)
+      .then(setExtra)
+      .catch((error: unknown) => {
+        setReviewError(error instanceof Error ? error.message : 'Não foi possível carregar as avaliações.');
+      })
+      .finally(() => setIsLoadingExtra(false));
+  }, [filme.idFilme]);
+
+  function upsertLocalReview(nota: number, comentario: string): void {
+    setExtra((current) => {
+      const previous = current.myReview;
+      const dist = { ...current.dist };
+      const id = previous?.id ?? `local-${Date.now()}`;
+      const review: Review = {
+        id,
+        who: 'Você',
+        stars: nota,
+        date: new Date().toLocaleDateString('pt-BR'),
+        text: comentario || 'Sem comentário.',
+      };
+
+      if (previous) {
+        dist[previous.nota as 1 | 2 | 3 | 4 | 5] = Math.max(0, dist[previous.nota as 1 | 2 | 3 | 4 | 5] - 1);
+      }
+      dist[nota as 1 | 2 | 3 | 4 | 5] += 1;
+
+      return {
+        ...current,
+        count: previous ? current.count : current.count + 1,
+        dist,
+        gate: 'reviewed',
+        myStars: nota,
+        myReview: {
+          id,
+          nota,
+          comentario: comentario || null,
+          createdAt: previous?.createdAt ?? new Date().toISOString(),
+        },
+        reviews: previous
+          ? current.reviews.map((item) => item.id === previous.id ? review : item)
+          : [review, ...current.reviews],
+      };
+    });
+  }
+
+  async function refreshExtra(): Promise<void> {
+    if (config.useMock) return;
+    setExtra(await fetchFilmeDetalheAvaliacoes(filme.idFilme));
+  }
+
+  async function handleSubmitReview(nota: number, comentario: string): Promise<void> {
+    setReviewError(null);
+    setIsSubmittingReview(true);
+
+    try {
+      if (config.useMock) {
+        upsertLocalReview(nota, comentario);
+        return;
+      }
+
+      if (extra.gate === 'reviewed' && extra.myReview) {
+        await atualizarAvaliacao(extra.myReview.id, { nota, comentario });
+      } else {
+        await criarAvaliacaoFilme(filme.idFilme, { nota, comentario });
+      }
+      await refreshExtra();
+    } catch (error) {
+      setReviewError(error instanceof Error ? error.message : 'Não foi possível salvar sua avaliação.');
+      throw error;
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  }
+
+  async function handleDeleteReview(): Promise<void> {
+    if (!extra.myReview) return;
+
+    setReviewError(null);
+    setIsSubmittingReview(true);
+
+    try {
+      if (config.useMock) {
+        setExtra((current) => {
+          if (!current.myReview) return current;
+          const { myStars: _myStars, ...currentWithoutStars } = current;
+          const dist = { ...current.dist };
+          dist[current.myReview.nota as 1 | 2 | 3 | 4 | 5] = Math.max(0, dist[current.myReview.nota as 1 | 2 | 3 | 4 | 5] - 1);
+
+          return {
+            ...currentWithoutStars,
+            count: Math.max(0, current.count - 1),
+            dist,
+            gate: 'eligible',
+            myReview: null,
+            reviews: current.reviews.filter((review) => review.id !== current.myReview?.id),
+          };
+        });
+        return;
+      }
+
+      await excluirAvaliacao(extra.myReview.id);
+      await refreshExtra();
+    } catch (error) {
+      setReviewError(error instanceof Error ? error.message : 'Não foi possível excluir sua avaliação.');
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  }
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -91,7 +212,18 @@ export function FilmeDetailModal({ filme, onClose }: FilmeDetailModalProps) {
             <S.EmptyState>Este filme ainda não recebeu avaliações.</S.EmptyState>
           )}
 
-          <GateBlock gate={extra.gate} myStars={extra.myStars} upcoming={estado === 'breve'} />
+          {isLoadingExtra && <S.EmptyState>Carregando avaliações...</S.EmptyState>}
+
+          <GateBlock
+            gate={extra.gate}
+            myStars={extra.myStars}
+            myReview={extra.myReview}
+            upcoming={estado === 'breve'}
+            isSubmitting={isSubmittingReview}
+            error={reviewError}
+            onSubmitReview={handleSubmitReview}
+            onDeleteReview={extra.gate === 'reviewed' ? handleDeleteReview : undefined}
+          />
 
           {extra.reviews.length > 0 && (
             <>

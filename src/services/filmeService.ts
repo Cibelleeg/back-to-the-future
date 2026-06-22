@@ -1,7 +1,5 @@
 import type { Filme, Sessao } from '../types/cinema';
 
-const DIAS_EM_BREVE = 7;
-
 function normalizarData(data: Date) {
   const d = new Date(data);
   d.setHours(0, 0, 0, 0);
@@ -52,13 +50,11 @@ export function filtrarFilmesEmBreve(
   idCinema?: number,
 ): Filme[] {
   const hoje = normalizarData(new Date());
-  const limite = new Date(hoje);
-  limite.setDate(limite.getDate() + DIAS_EM_BREVE);
   const filmesNoCinema = idFilmesNoCinema(sessoes, idCinema);
 
   return filtrarBase(filmes, genero, busca).filter((filme) => {
     const lancamento = normalizarData(new Date(filme.dataLancamento));
-    const estaEmBreve = lancamento > hoje && lancamento <= limite;
+    const estaEmBreve = lancamento > hoje;
     const estaNoCinema = !filmesNoCinema || filmesNoCinema.has(filme.idFilme);
     return estaEmBreve && estaNoCinema;
   });

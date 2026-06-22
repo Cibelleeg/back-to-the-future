@@ -126,6 +126,10 @@ export async function register(name: string, email: string, password: string): P
 
 const pending = new Map<string, Promise<unknown>>();
 
+type PaginatedResponse<T> = {
+  data: T[];
+};
+
 function apiFetch<T>(path: string): Promise<T> {
   if (!pending.has(path)) {
     const req = fetch(`${BASE_URL}${path}`, { headers: authHeaders() })
@@ -144,7 +148,7 @@ function apiFetch<T>(path: string): Promise<T> {
 }
 
 
-export const fetchFilmes   = (): Promise<Filme[]>   => apiFetch<FilmeDTO[]>('/movies').then((dtos) => dtos.map(mapFilmeDTO));
+export const fetchFilmes   = (): Promise<Filme[]>   => apiFetch<PaginatedResponse<FilmeDTO>>('/filmes').then((page) => page.data.map(mapFilmeDTO));
 export const fetchCinemas  = (): Promise<Cinema[]>  => apiFetch<CinemaDTO[]>('/cinemas').then((dtos) => dtos.map(mapCinemaDTO));
 export const fetchProdutos = (): Promise<Produto[]> => apiFetch<ProdutoDTO[]>('/products').then((dtos) => dtos.map(mapProdutoDTO));
 export const fetchSessoes  = (): Promise<Sessao[]>  => apiFetch<SessaoDTO[]>('/sessions').then((dtos) => dtos.map(mapSessaoDTO));
