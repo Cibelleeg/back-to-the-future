@@ -50,7 +50,7 @@ export interface Produto {
   preco: number;
   estoque: number;
   categoria: string;
-  img: string;
+  poster: string;
 }
 
 export interface CartItem {

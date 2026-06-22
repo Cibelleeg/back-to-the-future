@@ -59,7 +59,7 @@ export interface ProdutoDTO {
   price: number;
   stock: number;
   category: string;
-  img?: string;
+  poster?: string;
 }
 
 export interface SessaoDTO {
@@ -124,7 +124,7 @@ export function mapProdutoDTO(dto: ProdutoDTO): Produto {
     preco: dto.price,
     estoque: dto.stock,
     categoria: dto.category,
-    img: dto.img ?? '',
+    poster: dto.poster ?? '',
   };
 }
 

@@ -42,7 +42,7 @@ export function ProdutoCard({ produto, onClick }: ProdutoCardProps) {
   return (
     <S.Card>
       <S.ImageWrapper>
-        <img src={produto.img} alt={produto.nome} />
+        <img src={produto.poster} alt={produto.nome} />
       </S.ImageWrapper>
 
       <S.Body>

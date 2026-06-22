@@ -16,7 +16,7 @@ function produto(partial: ProdutoInput): Produto {
     preco: partial.preco ?? 10,
     estoque: partial.estoque ?? 5,
     categoria: partial.categoria ?? 'Snack',
-    img: partial.img ?? 'img.png',
+    poster: partial.poster ?? 'img.png',
   };
 }
 

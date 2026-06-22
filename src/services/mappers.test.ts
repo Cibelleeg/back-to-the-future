@@ -113,6 +113,6 @@ describe('mapProdutoDTO', () => {
     expect(result.nome).toBe('Pipoca');
     expect(result.preco).toBe(18.9);
     expect(result.idProduto).toBe(3);
-    expect(result.img).toBe('');
+    expect(result.poster).toBe('');
   });
 });
