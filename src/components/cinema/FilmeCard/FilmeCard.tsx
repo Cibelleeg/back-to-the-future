@@ -20,7 +20,7 @@ export function FilmeCard({ filme, sessoes, onClick }: FilmeCardProps) {
         <Badge label={filme.classificacao} />
       </S.Classification>
 
-      <S.Rating>★ {filme.nota}</S.Rating>
+      <S.Rating>★ {filme.nota.toFixed(1).replace('.', ',')}</S.Rating>
 
       <S.Overlay>
         <S.OverlayTitle>{filme.titulo}</S.OverlayTitle>

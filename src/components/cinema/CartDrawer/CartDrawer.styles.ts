@@ -289,7 +289,25 @@ export const RequiredSession = styled.div`
   }
 `;
 
-export const RequiredSessionLink = styled.a`
+export const RequiredLogin = styled(RequiredSession)`
+  border-color: rgba(31,158,87,0.30);
+  background: rgba(31,158,87,0.08);
+`;
+
+export const RequiredProfile = styled(RequiredSession)``;
+
+export const ErrorMessage = styled.p`
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(217, 84, 79, 0.34);
+  border-radius: 12px;
+  background: rgba(217, 84, 79, 0.10);
+  color: #ffb4b1;
+  font-size: 12px;
+  line-height: 1.45;
+`;
+
+export const RequiredSessionLink = styled.a<{ $profile?: boolean }>`
   min-height: 38px;
   display: inline-flex;
   align-items: center;
@@ -358,6 +376,17 @@ export const SecondaryLink = styled.a`
   font-weight: 700;
 
   &:hover { background: var(--surface-hover); }
+`;
+
+export const EmptyActions = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+
+  @media (max-width: 380px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const Empty = styled.div`

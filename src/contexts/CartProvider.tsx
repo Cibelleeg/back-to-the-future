@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import type { CartItem, Produto, Sessao } from '../types/cinema';
+import type { Assento, CartItem, Produto, Sessao, TipoIngresso } from '../types/cinema';
 import type { UserOrder } from '../types/order';
 import { CartContext, type SessaoVinculada } from './CartContext';
 
@@ -49,8 +49,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
     atualizarItem(item, 0);
   }
 
-  function vincularSessao(sessao: Sessao, filmeTitulo: string, cinemaNome?: string) {
-    setSessaoVinculada({ sessao, filmeTitulo, cinemaNome });
+  function vincularSessao(sessao: Sessao, filmeTitulo: string, cinemaNome: string | undefined, assentos: Assento[], tipoIngresso: TipoIngresso) {
+    const precoUnitario = tipoIngresso === 'MEIA' ? sessao.precoBase / 2 : sessao.precoBase;
+    setSessaoVinculada({
+      sessao,
+      filmeTitulo,
+      cinemaNome,
+      assentos,
+      tipoIngresso,
+      precoIngresso: precoUnitario * assentos.length,
+    });
   }
 
   function desvincularSessao() { setSessaoVinculada(null); }
@@ -66,7 +74,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }
 
   const countProdutos = items.reduce((acc, i) => acc + i.quantidade, 0);
-  const count = countProdutos + (sessaoVinculada ? 1 : 0);
+  const count = countProdutos + (sessaoVinculada ? sessaoVinculada.assentos.length : 0);
   const total = items.reduce((acc, i) => acc + i.preco * i.quantidade, 0);
 
   return (

@@ -9,15 +9,15 @@ interface MobileMenuProps {
   onFechar: () => void;
   search?: string;
   onSearchChange?: (v: string) => void;
-  cinemas: Cinema[];
-  cinemaSelecionado: Cinema | null;
-  onCinemaChange: (c: Cinema | null) => void;
+  cinemas?: Cinema[];
+  cinemaSelecionado?: Cinema | null;
+  onCinemaChange?: (c: Cinema | null) => void;
 }
 
 const LINKS = [
   { label: 'Filmes',     to: '/filmes' },
-  { label: 'Cinemas',    to: '/cinemas' },
   { label: 'Bomboniere', to: '/bomboniere' },
+  { label: 'O que foi feito', to: '/o-que-foi-feito' },
   { label: 'Equipe',     to: '/equipe' },
 ];
 
@@ -80,14 +80,18 @@ export function MobileMenu({ aberto, onFechar, search, onSearchChange, cinemas, 
           </S.NavLink>
         ))}
 
-        <S.Divider />
+        {cinemas && onCinemaChange && (
+          <>
+            <S.Divider />
 
-        <CinemaSelector
-          cinemas={cinemas}
-          cinemaSelecionado={cinemaSelecionado}
-          onChange={(c) => { onCinemaChange(c); onFechar(); }}
-          variant="menu"
-        />
+            <CinemaSelector
+              cinemas={cinemas}
+              cinemaSelecionado={cinemaSelecionado ?? null}
+              onChange={(c) => { onCinemaChange(c); onFechar(); }}
+              variant="menu"
+            />
+          </>
+        )}
       </S.Drawer>
     </S.Backdrop>
   );

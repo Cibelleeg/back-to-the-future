@@ -1,29 +1,16 @@
 import { useState } from 'react';
 import { MobileMenu, Navbar } from '../../components/cinema';
-import { useCinema } from '../../hooks';
 import { TEAM_MEMBERS } from './mockData';
 import * as S from './EquipePage.styles';
 
 export function EquipePage() {
   const [menuAberto, setMenuAberto] = useState(false);
-  const { cinemas, cinemaSelecionado, setCinemaSelecionado } = useCinema();
 
   return (
     <S.Main>
-      <Navbar
-        cinemas={cinemas}
-        cinemaSelecionado={cinemaSelecionado}
-        onCinemaChange={setCinemaSelecionado}
-        onMenuOpen={() => setMenuAberto(true)}
-      />
+      <Navbar onMenuOpen={() => setMenuAberto(true)} />
 
-      <MobileMenu
-        aberto={menuAberto}
-        onFechar={() => setMenuAberto(false)}
-        cinemas={cinemas}
-        cinemaSelecionado={cinemaSelecionado}
-        onCinemaChange={setCinemaSelecionado}
-      />
+      <MobileMenu aberto={menuAberto} onFechar={() => setMenuAberto(false)} />
 
       <S.Content>
         <S.Hero>
@@ -31,7 +18,7 @@ export function EquipePage() {
           <S.Title>A equipe por trás da tela.</S.Title>
           <S.Lede>
             Quatro estudantes da UNIFESP construíram o CINEFESP, e cada um deixou uma marca no projeto (literalmente).
-            As pixações em verde são nossa assinatura.
+            As "pixações" em verde são nossa assinatura.
           </S.Lede>
         </S.Hero>
 

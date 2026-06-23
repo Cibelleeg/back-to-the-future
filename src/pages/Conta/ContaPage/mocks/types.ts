@@ -1,15 +1,9 @@
 import type { OrderStatus, UserOrder } from '../../../../types/order';
+import type { UserReview } from '../../../../types/review';
 
 export type { OrderStatus };
 export type MockOrder = UserOrder;
-
-export interface MockReview {
-  id: string;
-  title: string;
-  rating: number;
-  date: string;
-  text: string;
-}
+export type MockReview = UserReview;
 
 export interface MockEligible {
   id: string;

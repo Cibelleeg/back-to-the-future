@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Filme, Sessao } from '../../../types/cinema';
+import type { Assento, Filme, Sessao, TipoIngresso } from '../../../types/cinema';
 import { useCinema, useFilmes, useSessoes } from '../../../hooks';
 import { FilmeModal, Hero, MobileMenu, Navbar, SecaoEmBreve, SecaoEmCartaz } from '../../../components/cinema';
 import { useCart } from '../../../contexts/useCart';
@@ -16,9 +16,9 @@ export function CinemaHomePage() {
   const { sessoes, sessoesPorFilme, error: sessoesError } = useSessoes(idCinema);
   const { filmeDestaque, filmesEmCartaz, filmesEmBreve, generos, generoSelecionado, setGeneroSelecionado, busca, setBusca, error } = useFilmes(idCinema, sessoes);
 
-  function handleBuy(filme: Filme, sessao: Sessao) {
+  function handleBuy(filme: Filme, sessao: Sessao, assentos: Assento[], tipoIngresso: TipoIngresso) {
     const cinemaDaSessao = cinemas.find(cinema => cinema.idCinema === sessao.idCinema);
-    vincularSessao(sessao, filme.titulo, cinemaDaSessao?.nome ?? cinemaSelecionado?.nome);
+    vincularSessao(sessao, filme.titulo, cinemaDaSessao?.nome ?? cinemaSelecionado?.nome, assentos, tipoIngresso);
     setFilmeSelecionado(null);
     abrirCarrinho();
   }

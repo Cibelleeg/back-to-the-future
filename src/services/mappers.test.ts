@@ -41,9 +41,14 @@ describe('mapFilmeDTO', () => {
   it('mapeia title, rating e duration corretamente', () => {
     const result = mapFilmeDTO(filmeDTO({ title: 'Duna', rating: 9.1, duration: 166 }));
     expect(result.titulo).toBe('Duna');
-    expect(result.nota).toBe(9.1);
+    expect(result.nota).toBeCloseTo(4.55); // rating 0-10 dividido por 2
     expect(result.duracao).toBe(166);
     expect(result.idFilme).toBe(1);
+  });
+
+  it('usa notaPonderada quando disponível', () => {
+    const result = mapFilmeDTO(filmeDTO({ notaPonderada: 4.68 } as never));
+    expect(result.nota).toBe(4.68);
   });
 
   it('usa defaults para campos opcionais ausentes', () => {

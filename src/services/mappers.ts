@@ -1,4 +1,6 @@
 import type {
+  Assento,
+  AssentoId,
   Cinema,
   CinemaId,
   Classificacao,
@@ -35,6 +37,9 @@ export interface FilmeDTO {
   posterUrl?: string | null;
   rating?: number;
   media?: number;
+  notaPonderada?: number;
+  totalAvaliacoes?: number;
+  estado?: string;
 }
 
 export interface CinemaDTO {
@@ -96,6 +101,18 @@ export interface SessaoDTO {
   availableSeats: number;
 }
 
+export interface AssentoDTO {
+  id?: number;
+  idAssento?: number;
+  idSala: number;
+  numero: string;
+  fila: string;
+  tipo: string;
+  ocupado?: boolean;
+  disponivel?: boolean;
+  status?: string;
+}
+
 const CLASSIFICACAO_MAP: Record<number, Classificacao> = {
   0: 'L',
   10: '10',
@@ -122,7 +139,7 @@ export function mapFilmeDTO(dto: FilmeDTO): Filme {
     dataLancamento: dto.releaseDate ?? dto.dataLancamento ?? `${dto.id ? new Date().getFullYear() : 2099}-01-01`,
     dataFimCartaz: dto.endDate ?? dto.dataFimCartaz ?? '2099-12-31',
     poster: dto.poster ?? dto.posterUrl ?? '',
-    nota: dto.rating ?? (dto.media !== undefined ? dto.media * 2 : 0),
+    nota: dto.notaPonderada ?? dto.media ?? (dto.rating !== undefined ? dto.rating / 2 : 0),
   };
 }
 
@@ -185,10 +202,25 @@ export function mapSessaoDTO(dto: SessaoDTO): Sessao {
     idSessao: dto.id as SessaoId,
     idFilme: dto.movieId as FilmeId,
     idCinema: dto.cinemaId as CinemaId,
+    idSala: dto.roomId,
     dataHora: dto.dateTime,
     idioma: dto.language as Idioma,
     formato: dto.format as Formato,
     precoBase: dto.basePrice,
     sala: { nome: dto.roomName, tipo: dto.roomType },
+  };
+}
+
+export function mapAssentoDTO(dto: AssentoDTO): Assento {
+  const ocupado = dto.ocupado
+    ?? (dto.disponivel !== undefined ? !dto.disponivel : undefined)
+    ?? (dto.status !== undefined ? dto.status !== 'DISPONIVEL' : false);
+  return {
+    idAssento: (dto.idAssento ?? dto.id ?? 0) as AssentoId,
+    idSala: dto.idSala,
+    numero: dto.numero,
+    fila: dto.fila,
+    tipo: dto.tipo,
+    ocupado,
   };
 }

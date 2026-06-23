@@ -34,3 +34,8 @@ export function formataDataHoje(): string {
 export function formataNota(nota: number): string {
   return nota.toFixed(1);
 }
+
+/** Converte nota 0-10 para escala 0-5 */
+export function score5(nota: number): number {
+  return parseFloat((nota / 2).toFixed(1));
+}

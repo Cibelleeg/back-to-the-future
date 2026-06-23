@@ -18,8 +18,8 @@ interface NavbarProps {
 
 const LINKS = [
   { label: 'Filmes',     to: '/filmes' },
-  { label: 'Cinemas',    to: '/cinemas' },
   { label: 'Bomboniere', to: '/bomboniere' },
+  { label: 'O que foi feito',    to: '/o-que-foi-feito' },
   { label: 'Equipe',     to: '/equipe' },
 ];
 

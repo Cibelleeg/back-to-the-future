@@ -1,5 +1,5 @@
 import { getCatalogoExtra } from '../catalogoData';
-import { ESTADO_LABEL, getEstado, score5 } from '../filmesUtils';
+import { ESTADO_LABEL, getEstado } from '../filmesUtils';
 import type { FilmeComRank } from '../types';
 import * as S from '../FilmesPage.styles';
 import { INFO_ICON } from './icons';
@@ -25,7 +25,7 @@ export function FilmesHero({ filme, onDetails }: FilmesHeroProps) {
         </S.HeroTitle>
         <S.HeroMeta>
           <S.ScoreBig>
-            <b>{score5(filme.nota).toFixed(1).replace('.', ',')}</b>
+            <b>{filme.nota.toFixed(1).replace('.', ',')}</b>
             <small>/ 5</small>
           </S.ScoreBig>
           <S.CountNote>

@@ -559,6 +559,63 @@ export const IconBtn = styled.button<{ $danger?: boolean }>`
     color: ${({ $danger }) => ($danger ? '#d9544f' : 'var(--text-primary)')};
     ${({ $danger }) => $danger && 'border-color: rgba(217, 84, 79, 0.4);'}
   }
+  &:disabled {
+    opacity: 0.55;
+    cursor: wait;
+  }
+`;
+
+export const ReviewEditor = styled.div`
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+
+  label {
+    display: grid;
+    gap: 5px;
+    max-width: 180px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  select,
+  textarea {
+    width: 100%;
+    border: 1px solid var(--border-glass);
+    border-radius: 10px;
+    background: var(--bg-secondary, #12121a);
+    color: var(--text-primary);
+    font: inherit;
+  }
+
+  select {
+    padding: 9px 10px;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 96px;
+    padding: 11px 12px;
+    line-height: 1.5;
+  }
+
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+`;
+
+export const ReviewEditorActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  button:disabled {
+    opacity: 0.65;
+    cursor: wait;
+  }
 `;
 
 export const EligibleBlock = styled.div`

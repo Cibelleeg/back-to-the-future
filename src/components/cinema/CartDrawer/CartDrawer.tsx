@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { CartItem } from '../../../types/cinema';
 import { useCart } from '../../../contexts/useCart';
+import { useAuth, useUserInfo } from '../../../hooks';
+import { fetchMe, finalizarCompra, setUserInfo } from '../../../services/api';
 import { formataData, formataHora, formataPreco } from '../../../utils/formatters';
 import * as S from './CartDrawer.styles';
 
@@ -16,13 +18,34 @@ function itemLabel(item: CartItem) {
 
 export function CartDrawer({ open, onClose }: CartDrawerProps) {
   const { items, count, total, sessaoVinculada, atualizarItem, removerItem, desvincularSessao, registrarPedido, limpar } = useCart();
+  const { isLoggedIn } = useAuth();
+  const userInfo = useUserInfo();
   const [finalizado, setFinalizado] = useState(false);
-  const [pedidoId, setPedidoId] = useState<number | null>(null);
+  const [pedidoId, setPedidoId] = useState<string | null>(null);
+  const [salvandoPedido, setSalvandoPedido] = useState(false);
+  const [erroPedido, setErroPedido] = useState<string | null>(null);
 
-  const ingressoTotal = sessaoVinculada?.sessao.precoBase ?? 0;
+  const ingressoTotal = sessaoVinculada?.precoIngresso ?? 0;
+  const ingressoCount = sessaoVinculada?.assentos.length ?? 0;
   const temPedido = Boolean(sessaoVinculada) || items.length > 0;
   const taxaServico = temPedido ? 2.5 : 0;
   const totalPedido = ingressoTotal + total + taxaServico;
+
+  // Busca dados frescos do backend ao abrir o carrinho
+  useEffect(() => {
+    if (!open || !isLoggedIn) return;
+    fetchMe().then(setUserInfo).catch(() => {});
+  }, [open, isLoggedIn]);
+
+  // Campos obrigatórios para compra de ingresso
+  const camposFaltando: string[] = [];
+  if (isLoggedIn) {
+    if (!userInfo?.name)        camposFaltando.push('Nome completo');
+    if (!userInfo?.cpf)         camposFaltando.push('CPF');
+    if (!userInfo?.phoneNumber) camposFaltando.push('Telefone');
+    if (!userInfo?.birthDate)   camposFaltando.push('Data de nascimento');
+  }
+  const perfilCompleto = isLoggedIn && camposFaltando.length === 0;
 
   useEffect(() => {
     if (!open) return;
@@ -32,6 +55,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
         if (finalizado) limpar();
         setFinalizado(false);
         setPedidoId(null);
+        setErroPedido(null);
         onClose();
       }
     };
@@ -52,6 +76,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
     if (finalizado) limpar();
     setFinalizado(false);
     setPedidoId(null);
+    setErroPedido(null);
     onClose();
   }
 
@@ -59,38 +84,59 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
     atualizarItem(item, Math.max(0, quantity));
   }
 
-  function finalizarPedido() {
-    if (!sessaoVinculada) return;
-    const nextPedidoId = Math.floor(100000 + Math.random() * 900000);
+  async function finalizarPedido() {
+    if (!sessaoVinculada || !isLoggedIn || !perfilCompleto || salvandoPedido) return;
+    setErroPedido(null);
+    setSalvandoPedido(true);
+
     const produtosCount = items.reduce((acc, item) => acc + item.quantidade, 0);
     const extras = items.length > 0
       ? `Bomboniere: ${items.map(item => `${item.quantidade} ${item.nome}`).join(' · ')}`
       : undefined;
 
-    registrarPedido({
-      id: String(nextPedidoId),
-      title: sessaoVinculada.filmeTitulo,
-      cinema: sessaoVinculada.cinemaNome ?? `CINEFESP #${sessaoVinculada.sessao.idCinema}`,
-      date: `${formataData(sessaoVinculada.sessao.dataHora)}, ${formataHora(sessaoVinculada.sessao.dataHora)}`,
-      room: `${sessaoVinculada.sessao.sala.nome} · ${sessaoVinculada.sessao.formato}`,
-      seats: ['A definir'],
-      extras,
-      status: 'confirmado',
-      total: formataPreco(totalPedido),
-      totalNote: produtosCount > 0 ? `1 ingresso + ${produtosCount} produto${produtosCount === 1 ? '' : 's'}` : '1 ingresso',
-      code: `#PED-2026-${nextPedidoId}`,
-    });
+    try {
+      const savedOrder = await finalizarCompra({
+        sessao: sessaoVinculada.sessao,
+        assentoIds: sessaoVinculada.assentos.map(assento => assento.idAssento),
+        tipo: sessaoVinculada.tipoIngresso,
+        items,
+      });
+      const fallbackPedidoId = String(Math.floor(100000 + Math.random() * 900000));
+      const nextPedidoId = String(savedOrder.id ?? fallbackPedidoId);
+      const code = savedOrder.code ?? `#PED-2026-${nextPedidoId}`;
 
-    setPedidoId(nextPedidoId);
-    setFinalizado(true);
+      registrarPedido({
+        id: String(nextPedidoId),
+        title: sessaoVinculada.filmeTitulo,
+        cinema: sessaoVinculada.cinemaNome ?? `CINEFESP #${sessaoVinculada.sessao.idCinema}`,
+        date: `${formataData(sessaoVinculada.sessao.dataHora)}, ${formataHora(sessaoVinculada.sessao.dataHora)}`,
+        room: `${sessaoVinculada.sessao.sala.nome} · ${sessaoVinculada.sessao.formato}`,
+        seats: sessaoVinculada.assentos.map(assento => `${assento.fila}${assento.numero}`),
+        extras,
+        status: 'confirmado',
+        total: formataPreco(totalPedido),
+        totalNote: produtosCount > 0 ? `${ingressoCount} ingresso${ingressoCount === 1 ? '' : 's'} + ${produtosCount} produto${produtosCount === 1 ? '' : 's'}` : `${ingressoCount} ingresso${ingressoCount === 1 ? '' : 's'}`,
+        code,
+      });
+
+      setPedidoId(nextPedidoId);
+      setFinalizado(true);
+    } catch (error) {
+      setErroPedido(error instanceof Error ? error.message : 'Não foi possível salvar o pedido no banco. Tente novamente em instantes.');
+    } finally {
+      setSalvandoPedido(false);
+    }
   }
 
   function novoPedido() {
     limpar();
     setFinalizado(false);
     setPedidoId(null);
+    setErroPedido(null);
     onClose();
   }
+
+  const temProdutos = items.length > 0;
 
   return (
     <S.Backdrop onClick={handleClose}>
@@ -115,7 +161,12 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
               </svg>
             </S.SuccessIcon>
             <h3>Compra finalizada</h3>
-            <p>Pedido #{pedidoId ?? '000000'} registrado. Retire seus produtos na bomboniere antes da sessão.</p>
+            <p>
+              Pedido {pedidoId ?? '#PED-2026-000000'} registrado.{' '}
+              {temProdutos
+                ? 'Apresente o código na entrada e retire seus produtos na bomboniere antes da sessão.'
+                : 'Apresente o código na entrada da sessão.'}
+            </p>
             <S.SuccessTotal>{formataPreco(totalPedido)}</S.SuccessTotal>
             <S.PrimaryButton onClick={novoPedido}>Concluir</S.PrimaryButton>
           </S.Success>
@@ -130,10 +181,15 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                   </svg>
                 </S.EmptyIcon>
                 <h3>Seu carrinho está vazio</h3>
-                <p>Escolha pipoca, bebidas ou combos na bomboniere para montar seu pedido.</p>
-                <S.SecondaryLink as={Link} to="/bomboniere" onClick={onClose}>
-                  Ir para bomboniere
-                </S.SecondaryLink>
+                <p>Escolha uma sessão para reservar seu ingresso ou adicione itens da bomboniere.</p>
+                <S.EmptyActions>
+                  <S.SecondaryLink as={Link} to="/" onClick={onClose}>
+                    Escolher sessão
+                  </S.SecondaryLink>
+                  <S.SecondaryLink as={Link} to="/bomboniere" onClick={onClose}>
+                    Bomboniere
+                  </S.SecondaryLink>
+                </S.EmptyActions>
               </S.Empty>
             ) : (
               <>
@@ -151,11 +207,13 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                         <span>
                           {formataData(sessaoVinculada.sessao.dataHora)} · {formataHora(sessaoVinculada.sessao.dataHora)} · {sessaoVinculada.sessao.formato}
                         </span>
-                        <small>{sessaoVinculada.sessao.sala.nome} · {sessaoVinculada.sessao.idioma}</small>
+                        <small>
+                          {sessaoVinculada.sessao.sala.nome} · {sessaoVinculada.sessao.idioma} · Assentos {sessaoVinculada.assentos.map(assento => `${assento.fila}${assento.numero}`).join(', ')} · {sessaoVinculada.tipoIngresso === 'MEIA' ? 'Meia' : 'Inteira'}
+                        </small>
                       </S.ItemInfo>
 
                       <S.ItemActions>
-                        <S.ItemTotal>{formataPreco(sessaoVinculada.sessao.precoBase)}</S.ItemTotal>
+                        <S.ItemTotal>{formataPreco(sessaoVinculada.precoIngresso)}</S.ItemTotal>
                         <S.RemoveButton type="button" onClick={desvincularSessao}>
                           remover
                         </S.RemoveButton>
@@ -194,14 +252,18 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                 </S.ItemsList>
 
                 <S.Totals>
-                  <S.TotalRow>
-                    <span>Ingresso</span>
-                    <strong>{formataPreco(ingressoTotal)}</strong>
-                  </S.TotalRow>
-                  <S.TotalRow>
-                    <span>Produtos</span>
-                    <strong>{formataPreco(total)}</strong>
-                  </S.TotalRow>
+                  {sessaoVinculada && (
+                    <S.TotalRow>
+                      <span>Ingresso</span>
+                      <strong>{formataPreco(ingressoTotal)}</strong>
+                    </S.TotalRow>
+                  )}
+                  {temProdutos && (
+                    <S.TotalRow>
+                      <span>Produtos</span>
+                      <strong>{formataPreco(total)}</strong>
+                    </S.TotalRow>
+                  )}
                   <S.TotalRow>
                     <span>Taxa de serviço</span>
                     <strong>{formataPreco(taxaServico)}</strong>
@@ -224,12 +286,43 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                   </S.RequiredSession>
                 )}
 
+                {!isLoggedIn && (
+                  <S.RequiredLogin>
+                    <div>
+                      <strong>Login obrigatório</strong>
+                      <span>Entre na sua conta para finalizar a compra e salvar o pedido no histórico.</span>
+                    </div>
+                    <S.RequiredSessionLink as={Link} to="/login#entrar" onClick={onClose}>
+                      Entrar na conta
+                    </S.RequiredSessionLink>
+                  </S.RequiredLogin>
+                )}
+
+                {isLoggedIn && !perfilCompleto && (
+                  <S.RequiredProfile>
+                    <div>
+                      <strong>Cadastro incompleto</strong>
+                      <span>Para comprar ingressos, preencha: {camposFaltando.join(', ')}.</span>
+                    </div>
+                    <S.RequiredSessionLink as={Link} to="/conta" onClick={onClose} $profile>
+                      Completar cadastro
+                    </S.RequiredSessionLink>
+                  </S.RequiredProfile>
+                )}
+
+                {erroPedido && (
+                  <S.ErrorMessage>{erroPedido}</S.ErrorMessage>
+                )}
+
                 <S.Footer>
                   <S.SecondaryLink as={Link} to="/bomboniere" onClick={onClose}>
-                    Alterar pedido
+                    Explorar bomboniere
                   </S.SecondaryLink>
-                  <S.PrimaryButton onClick={finalizarPedido} disabled={!sessaoVinculada}>
-                    Finalizar compra
+                  <S.PrimaryButton
+                    onClick={finalizarPedido}
+                    disabled={!sessaoVinculada || !isLoggedIn || !perfilCompleto || salvandoPedido}
+                  >
+                    {salvandoPedido ? 'Salvando pedido...' : 'Finalizar compra'}
                   </S.PrimaryButton>
                 </S.Footer>
               </>

@@ -1,5 +1,5 @@
-import { ORDERS, type OrderStatus } from '../mockData';
-import { useCart } from '../../../../contexts/useCart';
+import type { OrderStatus } from '../mockData';
+import type { UserOrder } from '../../../../types/order';
 import * as S from '../ContaPage.styles';
 
 const FILM_ICON = (
@@ -15,16 +15,23 @@ const STATUS_LABEL: Record<OrderStatus, string> = {
   cancelado: 'Cancelado',
 };
 
-export function PedidosPanel() {
-  const { userOrders } = useCart();
-  const orders = [...userOrders, ...ORDERS];
+type PedidosPanelProps = {
+  orders: UserOrder[];
+  isLoading: boolean;
+  error: string | null;
+};
 
+export function PedidosPanel({ orders, isLoading, error }: PedidosPanelProps) {
   return (
     <S.PanelWrap>
       <S.PanelHead>
         <h1>Meus pedidos</h1>
         <p>Histórico de ingressos e itens da bomboniere. Apresente o código na entrada da sala.</p>
       </S.PanelHead>
+
+      {isLoading && <S.Help>Carregando seus pedidos...</S.Help>}
+      {error && <S.Help>{error}</S.Help>}
+      {!isLoading && !error && orders.length === 0 && <S.Help>Você ainda não tem pedidos.</S.Help>}
 
       {orders.map(order => (
         <S.OrderCard key={order.id}>

@@ -1,15 +1,10 @@
 import type { Filme } from '../../types/cinema';
 import type { EstadoFilme } from './types';
-
 export const ESTADO_LABEL: Record<EstadoFilme, string> = {
   cartaz: 'Em cartaz',
   breve: 'Em breve',
   encerrado: 'Encerrado',
 };
-
-export function score5(nota: number) {
-  return parseFloat((nota / 2).toFixed(1));
-}
 
 export function getEstado(filme: Filme): EstadoFilme {
   const now = new Date().setHours(0, 0, 0, 0);

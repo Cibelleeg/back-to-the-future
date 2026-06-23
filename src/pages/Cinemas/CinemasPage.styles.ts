@@ -49,6 +49,92 @@ export const HeroLede = styled.p`
   line-height: 1.6;
 `;
 
+export const Snapshot = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid ${LINE};
+  margin-bottom: 34px;
+  background: ${LINE};
+
+  @media (max-width: 680px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const SnapshotItem = styled.div`
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.035);
+
+  span {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  strong {
+    display: block;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2rem);
+    line-height: 1;
+    color: var(--text-primary);
+  }
+`;
+
+export const DomainPanel = styled.section`
+  padding: 28px 0 42px;
+  border-top: 1px solid ${LINE};
+`;
+
+export const PanelTitle = styled.h2`
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.35rem, 3vw, 1.9rem);
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 18px;
+`;
+
+export const DomainGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+
+  @media (max-width: 880px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const DomainCard = styled.div`
+  border: 1px solid ${LINE};
+  background: rgba(255, 255, 255, 0.035);
+  padding: 16px;
+  border-radius: 8px;
+
+  strong {
+    display: block;
+    color: var(--primary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.82rem;
+    margin-bottom: 8px;
+  }
+
+  span {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+`;
+
 export const CinemaList = styled.div`
   display: flex;
   flex-direction: column;
@@ -129,6 +215,28 @@ export const Screen = styled.div`
   }
 `;
 
+export const CodeList = styled.div`
+  position: absolute;
+  inset: auto 18px 46px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2;
+
+  span {
+    width: fit-content;
+    max-width: 100%;
+    padding: 5px 8px;
+    border: 1px solid rgba(31,158,87,0.34);
+    border-radius: 6px;
+    background: rgba(5, 10, 7, 0.78);
+    color: rgba(236,239,234,0.88);
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(0.58rem, 1.5vw, 0.72rem);
+    overflow-wrap: anywhere;
+  }
+`;
+
 export const ScreenLabel = styled.span`
   position: absolute;
   left: 18px;
@@ -174,6 +282,33 @@ export const Story = styled.p`
   margin-bottom: 22px;
 `;
 
+export const RuleList = styled.ul`
+  display: grid;
+  gap: 9px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    position: relative;
+    padding-left: 18px;
+    color: rgba(236,239,234,0.82);
+    line-height: 1.5;
+    font-size: 0.94rem;
+  }
+
+  li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--primary);
+  }
+`;
+
 export const Meta = styled.dl`
   display: flex;
   flex-wrap: wrap;
@@ -203,4 +338,46 @@ export const MetaValue = styled.dd`
   font-size: 0.9rem;
   color: var(--text-primary);
   margin: 0;
+`;
+
+export const Pitch = styled.section`
+  margin-top: 38px;
+  padding: 28px;
+  border: 1px solid rgba(31,158,87,0.34);
+  border-radius: 8px;
+  background: rgba(31,158,87,0.08);
+
+  p {
+    color: rgba(236,239,234,0.84);
+    line-height: 1.7;
+    font-size: 1rem;
+    max-width: 82ch;
+  }
+`;
+
+export const TalkingList = styled.ul`
+  display: grid;
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    position: relative;
+    padding-left: 18px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    font-size: 0.94rem;
+  }
+
+  li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.68em;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--primary);
+  }
 `;

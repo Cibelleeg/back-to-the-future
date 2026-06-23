@@ -3,7 +3,7 @@ import { StarRating } from '../../../components/ui';
 import { config } from '../../../config';
 import { atualizarAvaliacao, criarAvaliacaoFilme, excluirAvaliacao, fetchFilmeDetalheAvaliacoes } from '../../../services/avaliacaoService';
 import { getCatalogoExtra, type CatalogoExtra, type Review } from '../catalogoData';
-import { ESTADO_LABEL, getEstado, score5 } from '../filmesUtils';
+import { ESTADO_LABEL, getEstado } from '../filmesUtils';
 import type { FilmeComRank } from '../types';
 import * as S from '../FilmesPage.styles';
 import { GateBlock } from './GateBlock';
@@ -20,7 +20,7 @@ export function FilmeDetailModal({ filme, onClose }: FilmeDetailModalProps) {
   const [reviewError, setReviewError] = useState<string | null>(null);
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const estado = getEstado(filme);
-  const score = score5(filme.nota);
+  const score = filme.nota;
   const maxDist = Math.max(...Object.values(extra.dist), 1);
 
   useEffect(() => {

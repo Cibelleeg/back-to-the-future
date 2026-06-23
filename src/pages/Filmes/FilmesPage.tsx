@@ -3,7 +3,6 @@ import type { Filme, FilmeId } from '../../types/cinema';
 import { FILMES } from '../../data/mock';
 import { fetchFilmes } from '../../services/api';
 import { config } from '../../config';
-import { useCinema } from '../../hooks';
 import { Navbar, MobileMenu } from '../../components/cinema';
 import { getCatalogoExtra } from './catalogoData';
 import { CatalogControls } from './components/CatalogControls';
@@ -19,11 +18,8 @@ export function FilmesPage() {
   const [sort, setSort] = useState<SortKey>('nota');
   const [genero, setGenero] = useState('Todos');
   const [estado, setEstado] = useState<EstadoFilter>('todos');
-  const [busca, setBusca] = useState('');
   const [selectedId, setSelectedId] = useState<FilmeId | null>(null);
   const [menuAberto, setMenuAberto] = useState(false);
-
-  const { cinemas, cinemaSelecionado, setCinemaSelecionado } = useCinema();
 
   useEffect(() => {
     if (config.useMock) return;
@@ -41,7 +37,6 @@ export function FilmesPage() {
     let list = rankedFilmes.filter(filme => {
       if (genero !== 'Todos' && filme.genero !== genero) return false;
       if (estado !== 'todos' && getEstado(filme) !== estado) return false;
-      if (busca.trim() && !filme.titulo.toLowerCase().includes(busca.toLowerCase())) return false;
       return true;
     });
 
@@ -58,7 +53,7 @@ export function FilmesPage() {
     }
 
     return list;
-  }, [rankedFilmes, genero, estado, busca, sort]);
+  }, [rankedFilmes, genero, estado, sort]);
 
   const hero = rankedFilmes[0];
   const selectedFilme = selectedId != null
@@ -67,24 +62,9 @@ export function FilmesPage() {
 
   return (
     <S.Main>
-      <Navbar
-        search={busca}
-        onSearchChange={setBusca}
-        cinemas={cinemas}
-        cinemaSelecionado={cinemaSelecionado}
-        onCinemaChange={setCinemaSelecionado}
-        onMenuOpen={() => setMenuAberto(true)}
-      />
+      <Navbar onMenuOpen={() => setMenuAberto(true)} />
 
-      <MobileMenu
-        aberto={menuAberto}
-        onFechar={() => setMenuAberto(false)}
-        search={busca}
-        onSearchChange={setBusca}
-        cinemas={cinemas}
-        cinemaSelecionado={cinemaSelecionado}
-        onCinemaChange={setCinemaSelecionado}
-      />
+      <MobileMenu aberto={menuAberto} onFechar={() => setMenuAberto(false)} />
 
       <S.Content>
         <S.PageHead>
