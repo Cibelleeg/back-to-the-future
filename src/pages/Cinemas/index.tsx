@@ -148,7 +148,7 @@ export function CinemasPage() {
         </S.Snapshot>
 
         <S.DomainPanel>
-          <S.PanelTitle>Classes e métodos para citar</S.PanelTitle>
+          <S.PanelTitle>Classes e métodos</S.PanelTitle>
           <S.DomainGrid>
             {DOMAIN_CLASSES.map(([name, description]) => (
               <S.DomainCard key={name}>
