@@ -12,7 +12,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     name: 'Andressa',
     role: 'Front-end & Back-end',
-    bio: 'No back-end, implementei o sistema de pedidos e controle de estoque, incluindo criação e cancelamento de pedidos, suporte a combos e o CRUD de produtos e combos. Também desenvolvi a modelagem da compra de ingressos no banco de dados, com as entidades e relacionamentos necessários, além da criação das tabelas de Sala e Assento e suas migrations. Ainda realizei a atualização de cinema com validação para evitar CNPJs duplicados. No front-end, desenvolvi a página inicial da aplicação, com a exibição do catálogo de filmes e a produtos',
+    bio: 'No back-end, implementei o sistema de pedidos e controle de estoque, incluindo criação, suporte a combos e o CRUD de combos. Também desenvolvi a modelagem da compra de ingressos no banco de dados, com as entidades e relacionamentos necessários, além da criação das tabelas de Sala e Assento e suas migrations. Ainda realizei a atualização de cinema com validação para evitar CNPJs duplicados. No front-end, desenvolvi a página inicial da aplicação, com a exibição do catálogo de filmes e a produtos',
     github: 'https://github.com/AndressaGSouza',
     image: '/team/Andress.png',
     alt: 'Andressa, menina risonha que ri e que sonha',
