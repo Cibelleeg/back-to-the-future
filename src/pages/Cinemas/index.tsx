@@ -93,13 +93,6 @@ const DOMAIN_CLASSES = [
   ['FinalizarCompraUseCase', 'coordena pedido, ingresso, estoque e regras de compra.'],
 ];
 
-const TALKING_POINTS = [
-  'Começar explicando que o domínio escolhido foi um cinema universitário.',
-  'Mostrar que a compra é a regra mais completa do sistema.',
-  'Citar que rotas e controllers não guardam a regra principal; eles acionam use cases.',
-  'Usar avaliação e ranking como exemplos de lógica além de cadastro.',
-];
-
 export function CinemasPage() {
   const [menuAberto, setMenuAberto] = useState(false);
 
@@ -175,22 +168,6 @@ export function CinemasPage() {
             </S.CinemaRow>
           ))}
         </S.CinemaList>
-
-        <S.Pitch>
-          <S.PanelTitle>Fala pronta para abrir a explicação</S.PanelTitle>
-          <p>
-            “O CINEFESP foi pensado como um sistema de cinema com regras reais. A parte mais importante
-            é a compra: o usuário seleciona sessão, múltiplos assentos e produtos; o backend valida
-            idade, classificação indicativa, meia-entrada, estoque e assentos ocupados; depois cria
-            pedido, itens e ingressos em uma única operação. Isso mostra POO porque as regras ficam em
-            classes e casos de uso, não espalhadas só nas rotas.”
-          </p>
-          <S.TalkingList>
-            {TALKING_POINTS.map((point) => (
-              <li key={point}>{point}</li>
-            ))}
-          </S.TalkingList>
-        </S.Pitch>
       </S.Content>
     </S.Main>
   );
