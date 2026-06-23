@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import type { CartItem } from '../../../types/cinema';
 import { useCart } from '../../../contexts/useCart';
@@ -17,7 +18,7 @@ function itemLabel(item: CartItem) {
 }
 
 export function CartDrawer({ open, onClose }: CartDrawerProps) {
-  const { items, count, total, sessaoVinculada, atualizarItem, removerItem, desvincularSessao, registrarPedido, limpar } = useCart();
+  const { items, count, sessaoVinculada, atualizarItem, removerItem, desvincularSessao, registrarPedido, limpar } = useCart();
   const { isLoggedIn } = useAuth();
   const userInfo = useUserInfo();
   const [finalizado, setFinalizado] = useState(false);
@@ -27,9 +28,10 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 
   const ingressoTotal = sessaoVinculada?.precoIngresso ?? 0;
   const ingressoCount = sessaoVinculada?.assentos.length ?? 0;
+  const produtosTotal = items.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
   const temPedido = Boolean(sessaoVinculada) || items.length > 0;
   const taxaServico = temPedido ? 2.5 : 0;
-  const totalPedido = ingressoTotal + total + taxaServico;
+  const totalPedido = ingressoTotal + produtosTotal + taxaServico;
 
   // Busca dados frescos do backend ao abrir o carrinho
   useEffect(() => {
@@ -138,7 +140,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 
   const temProdutos = items.length > 0;
 
-  return (
+  const drawer = (
     <S.Backdrop onClick={handleClose}>
       <S.Drawer onClick={(event) => event.stopPropagation()}>
         <S.Header>
@@ -217,7 +219,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                         <S.RemoveButton type="button" onClick={desvincularSessao}>
                           remover
                         </S.RemoveButton>
-                        <S.ChangeSessionLink as={Link} to="/" onClick={onClose}>
+                        <S.ChangeSessionLink as={Link} to="/" onClick={handleClose}>
                           trocar sessão
                         </S.ChangeSessionLink>
                       </S.ItemActions>
@@ -261,7 +263,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                   {temProdutos && (
                     <S.TotalRow>
                       <span>Produtos</span>
-                      <strong>{formataPreco(total)}</strong>
+                      <strong>{formataPreco(produtosTotal)}</strong>
                     </S.TotalRow>
                   )}
                   <S.TotalRow>
@@ -332,4 +334,6 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
       </S.Drawer>
     </S.Backdrop>
   );
+
+  return createPortal(drawer, document.body);
 }

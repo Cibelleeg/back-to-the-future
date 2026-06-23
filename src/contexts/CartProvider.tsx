@@ -75,7 +75,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const countProdutos = items.reduce((acc, i) => acc + i.quantidade, 0);
   const count = countProdutos + (sessaoVinculada ? sessaoVinculada.assentos.length : 0);
-  const total = items.reduce((acc, i) => acc + i.preco * i.quantidade, 0);
+  const totalProdutos = items.reduce((acc, i) => acc + i.preco * i.quantidade, 0);
+  const totalIngressos = sessaoVinculada?.precoIngresso ?? 0;
+  const total = totalProdutos + totalIngressos;
 
   return (
     <CartContext.Provider value={{ items, count, total, cartOpen, userOrders, sessaoVinculada, abrirCarrinho, fecharCarrinho, atualizar, atualizarItem, removerItem, vincularSessao, desvincularSessao, registrarPedido, limpar }}>
