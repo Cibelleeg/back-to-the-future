@@ -57,20 +57,7 @@ const SLIDES = [
     ],
   },
   {
-    tag: '05 · Cancelamento',
-    title: 'Cancelar pedido de verdade',
-    summary:
-      'Cancelar deixou de ser só alterar status. O sistema desfaz efeitos do pedido dentro do domínio.',
-    code: ['CancelarPedidoUseCase', 'cancelWithRestock', 'status CANCELADO'],
-    items: [
-      'Bloqueia cancelar o mesmo pedido duas vezes.',
-      'Cancela os ingressos associados ao pedido.',
-      'Devolve estoque dos produtos comprados.',
-      'Também devolve produtos internos de combos.',
-    ],
-  },
-  {
-    tag: '06 · Avaliações',
+    tag: '05 · Avaliações',
     title: 'Avaliar exige ter assistido',
     summary:
       'A avaliação possui regra própria: não basta estar logado, o usuário precisa ter assistido ao filme.',
@@ -83,7 +70,7 @@ const SLIDES = [
     ],
   },
   {
-    tag: '07 · Catálogo',
+    tag: '06 · Catálogo',
     title: 'Ranking e estado dos filmes',
     summary:
       'O catálogo usa classes para calcular estado, média, distribuição e ranking ponderado dos filmes.',
